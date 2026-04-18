@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FilterChipRow extends StatefulWidget {
-  const FilterChipRow({super.key});
+class FilterChipRow extends StatelessWidget {
+  const FilterChipRow({
+    super.key,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
 
-  @override
-  State<FilterChipRow> createState() => _FilterChipRowState();
-}
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
 
-class _FilterChipRowState extends State<FilterChipRow> {
-  final List<String> _filters = ['All', 'Income', 'Expenses', 'Pending'];
-  int _selectedIndex = 0;
+  static const List<String> _filters = ['All', 'Income', 'Expenses'];
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +27,13 @@ class _FilterChipRowState extends State<FilterChipRow> {
             clipBehavior: Clip.none,
             child: Row(
               children: List.generate(_filters.length, (index) {
-                final isSelected = _selectedIndex == index;
+                final isSelected = selectedIndex == index;
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(100),
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
+                    onTap: () => onSelected(index),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(

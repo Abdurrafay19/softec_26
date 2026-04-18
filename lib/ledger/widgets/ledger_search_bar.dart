@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LedgerSearchBar extends StatelessWidget {
-  const LedgerSearchBar({super.key});
+  const LedgerSearchBar({
+    super.key,
+    required this.onChanged,
+    this.controller,
+  });
+
+  final ValueChanged<String> onChanged;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +29,8 @@ class LedgerSearchBar extends StatelessWidget {
         ],
       ),
       child: TextField(
+        controller: controller,
+        onChanged: onChanged,
         style: GoogleFonts.inter(
           color: colorScheme.onSurface,
           fontWeight: FontWeight.w500,

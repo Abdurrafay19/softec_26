@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // An enum makes handling our specific status styles much cleaner
-enum TransactionStatus { completed, received, pending, declined }
+enum TransactionStatus { completed, received, declined }
 
 class TransactionCard extends StatelessWidget {
   final IconData icon;
@@ -49,7 +49,6 @@ class TransactionCard extends StatelessWidget {
         pillBgColor = colorScheme.secondaryContainer.withValues(alpha: 0.3);
         pillTextColor = colorScheme.onSecondaryContainer;
         break;
-      case TransactionStatus.pending:
       case TransactionStatus.completed:
       // Neutral pill for standard transactions
         pillBgColor = colorScheme.surfaceContainerHighest;

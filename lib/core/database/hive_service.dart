@@ -7,7 +7,7 @@ class HiveService {
   // Initialize Hive and Register Adapter
   static Future<void> init() async {
     await Hive.initFlutter();
-    Hive.registerAdapter(TransactionAdapter());
+    //Hive.registerAdapter(TransactionAdapter());
     await Hive.openBox<Transaction>(_boxName);
   }
 

@@ -87,19 +87,15 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   // --- Submission Logic: The Magic Trick ---
   void _handleSave() async {
     final double amountValue = double.tryParse(_amountController.text) ?? 0.0;
+    final bool isMoneyInFromAmount = amountValue >= 0;
 
-    // Logic from your implementation plan
-    String trackingCategory;
-    if (!isPaid) {
-      trackingCategory = isMoneyIn ? "Pending Receivable" : "Pending Payable";
-    } else {
-      trackingCategory = isMoneyIn ? "Income" : "Expense";
-    }
+    final String trackingCategory =
+        isMoneyInFromAmount ? "Income" : "Expense";
 
     final newTransaction = Transaction(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       amount: amountValue,
-      isMoneyIn: isMoneyIn,
+      isMoneyIn: isMoneyInFromAmount,
       isPaid: isPaid,
       vendorName: _vendorController.text,
       description: _descriptionController.text,

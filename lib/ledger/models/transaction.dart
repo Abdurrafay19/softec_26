@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'transaction.g.dart'; // This will be generated
+//part 'transaction.g.dart'; // This will be generated
 
 @HiveType(typeId: 0)
 class Transaction extends HiveObject {
@@ -26,7 +26,7 @@ class Transaction extends HiveObject {
   final DateTime date;
 
   @HiveField(7)
-  final String category; // e.g., "Pending Receivable", "Income", etc.
+  final String category; // e.g., "Income", "Expense".
 
   Transaction({
     required this.id,
