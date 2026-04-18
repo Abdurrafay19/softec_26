@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,6 +6,7 @@ class MetricTile extends StatelessWidget {
   final String title;
   final String amount;
   final Color iconColor;
+  final String? info; // Added optional info text
 
   const MetricTile({
     super.key,
@@ -14,6 +14,7 @@ class MetricTile extends StatelessWidget {
     required this.title,
     required this.amount,
     required this.iconColor,
+    this.info,
   });
 
   @override
@@ -23,12 +24,10 @@ class MetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        // Uses surfaceContainerLow for structural zones per DESIGN.md
         color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            // Uses onSurface for a tinted ambient shadow
             color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
             offset: const Offset(0, 4),
@@ -40,14 +39,30 @@ class MetricTile extends StatelessWidget {
         children: [
           Icon(icon, color: iconColor, size: 28),
           const SizedBox(height: 16),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-              color: colorScheme.onSurfaceVariant,
-            ),
+          Row(
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              if (info != null) ...[
+                const SizedBox(width: 4),
+                Tooltip(
+                  message: info!,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 14,
+                    color: colorScheme.outline,
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 4),
           Text(
@@ -59,6 +74,18 @@ class MetricTile extends StatelessWidget {
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
+          if (info != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Text(
+                info!,
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
         ],
       ),
     );
