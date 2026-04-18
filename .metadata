@@ -18,6 +18,7 @@ migration:
     - platform: android
       create_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
       base_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
+<<<<<<< HEAD
     - platform: ios
       create_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
       base_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
@@ -33,6 +34,8 @@ migration:
     - platform: windows
       create_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
       base_revision: ff37bef603469fb030f2b72995ab929ccfc227f0
+=======
+>>>>>>> e97531993992870d760059a693d601652a052953
 
   # User provided section
 
