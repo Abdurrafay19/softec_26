@@ -19,7 +19,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 2; // Default to 2 so it opens directly to your Analytics UI for testing
+  int _currentIndex = 0;
 
   // The list of screens in the exact order of the bottom nav items
   final List<Widget> _screens = const [

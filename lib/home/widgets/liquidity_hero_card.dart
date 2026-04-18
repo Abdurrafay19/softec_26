@@ -48,7 +48,10 @@ class LiquidityHeroCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF69E8FE), // secondary-container
                   borderRadius: BorderRadius.circular(100),
@@ -56,14 +59,20 @@ class LiquidityHeroCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.trending_up, color: Color(0xFF006774), size: 16),
+                    const Icon(
+                      Icons.trending_up,
+                      color: Color(0xFF006774),
+                      size: 16,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '+12.4%',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF006774), // on-secondary-container
+                        color: const Color(
+                          0xFF006774,
+                        ), // on-secondary-container
                       ),
                     ),
                   ],
