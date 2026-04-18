@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Ensure these point to your global widget locations
+import '../../core/database/hive_service.dart';
+import '../../ledger/models/transaction.dart';
 import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
@@ -83,10 +85,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   }
 
   // --- Submission Logic: The Magic Trick ---
-  void _handleSave() {
-    final double amount = double.tryParse(_amountController.text) ?? 0.0;
+  void _handleSave() async {
+    final double amountValue = double.tryParse(_amountController.text) ?? 0.0;
 
-    // Categorization logic based on paid status and transaction type
+    // Logic from your implementation plan
     String trackingCategory;
     if (!isPaid) {
       trackingCategory = isMoneyIn ? "Pending Receivable" : "Pending Payable";
@@ -94,18 +96,21 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       trackingCategory = isMoneyIn ? "Income" : "Expense";
     }
 
-    // Logic for printing/saving the record
-    debugPrint("""
-      New Transaction Logged:
-      Amount: $amount
-      Type: ${isMoneyIn ? 'INFLOW' : 'OUTFLOW'}
-      Status: ${isPaid ? 'PAID' : 'UNPAID'}
-      Category: $trackingCategory
-      Vendor: ${_vendorController.text}
-      Date: ${selectedDate.toIso8601String()}
-    """);
+    final newTransaction = Transaction(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      amount: amountValue,
+      isMoneyIn: isMoneyIn,
+      isPaid: isPaid,
+      vendorName: _vendorController.text,
+      description: _descriptionController.text,
+      date: selectedDate,
+      category: trackingCategory,
+    );
 
-    Navigator.pop(context);
+    // Save to Hive
+    await HiveService.addTransaction(newTransaction);
+
+    if (mounted) Navigator.pop(context);
   }
 
   @override
