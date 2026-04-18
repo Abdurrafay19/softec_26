@@ -247,7 +247,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       Switch(
                         value: isPaid,
                         onChanged: (val) => setState(() => isPaid = val),
-                        activeColor: colorScheme.primary,
+                        activeThumbColor: colorScheme.primary,
                       ),
                     ],
                   ),
@@ -326,7 +326,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
           Switch(
             value: isPaid,
             onChanged: (val) => setState(() => isPaid = val),
-            activeColor: colorScheme.primary,
+            activeThumbColor: colorScheme.primary,
           ),
         ],
       ),
