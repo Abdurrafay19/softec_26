@@ -4,8 +4,22 @@ import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'login_screen.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  bool _enableBiometrics = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +43,9 @@ class SignupScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const Spacer(),
+                    
                     Text(
-                      'Create Your Sanctuary',
+                      'Welcome Aboard',
                       style: theme.textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: -1.0,
@@ -39,7 +54,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Set up your secure business profile.',
+                      'Let\'s get your profile set up.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
@@ -47,6 +62,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 40),
                     
+                    // Main Input Card
                     Container(
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
@@ -63,31 +79,59 @@ class SignupScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const EditorialTextField(
+                          EditorialTextField(
                             label: 'Full Name',
                             hintText: 'e.g., Elena Richardson',
+                            // Pass the controller if your custom widget supports it:
+                            // controller: _nameController, 
                           ),
                           const SizedBox(height: 24),
-                          const EditorialTextField(
-                            label: 'Company Name',
-                            hintText: 'e.g., Lumen Creative Agency',
-                          ),
-                          const SizedBox(height: 24),
-                          const EditorialTextField(
-                            label: 'Business Email',
-                            hintText: 'name@company.com',
-                          ),
-                          const SizedBox(height: 24),
-                          const EditorialTextField(
-                            label: 'Password',
-                            hintText: '••••••••',
-                            isPassword: true,
+                          
+                          // Biometric Toggle
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7F9FF),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: SwitchListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                'Enable Biometric Login',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.colorScheme.onSurface,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'Use fingerprint or face to sign in faster.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              value: _enableBiometrics,
+                              activeColor: theme.colorScheme.primary,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _enableBiometrics = value;
+                                });
+                              },
+                            ),
                           ),
                           const SizedBox(height: 40),
+                          
                           PrimaryButton(
-                            text: 'Create Account',
-                            icon: Icons.person_add,
-                            onPressed: () {},
+                            text: 'Complete Setup',
+                            icon: Icons.check_circle_outline,
+                            onPressed: () {
+                              // Handle signup logic here using:
+                              // _nameController.text
+                              // _enableBiometrics
+                            },
                           ),
                         ],
                       ),
@@ -119,7 +163,6 @@ class SignupScreen extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                   // const AuthFooter(),
                   ],
                 ),
               ),
