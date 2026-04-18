@@ -1,5 +1,4 @@
-// lib/main.dart
-
+import 'package:dynamic_color/dynamic_color.dart'; // Add this import
 import 'package:flutter/material.dart';
 import 'core/app_theme.dart';
 import 'navigation/screens/main_navigation_screen.dart';
@@ -13,11 +12,18 @@ class FiscalArchitectApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'The Fiscal Architect',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const MainNavigationScreen(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return MaterialApp(
+          title: 'The Fiscal Architect',
+          debugShowCheckedModeBanner: false,
+          // Use dynamic colors if available, otherwise fall back to your custom theme
+          theme: AppTheme.lightTheme(lightDynamic),
+          darkTheme: AppTheme.darkTheme(darkDynamic),
+          themeMode: ThemeMode.system,
+          home: const MainNavigationScreen(),
+        );
+      },
     );
   }
 }

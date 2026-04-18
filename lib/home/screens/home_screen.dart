@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Import all your beautiful modular components
+// Import all modular components
 import '../widgets/liquidity_hero_card.dart';
 import '../widgets/cash_flow_trends_card.dart';
 import '../widgets/metrics_grid_section.dart';
@@ -12,13 +12,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Step 5.1: Scaffold with a transparent background to blend with MainNavigationScreen
+    // Access the global theme tokens
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
+      // Keep transparent to show the background color from MainNavigationScreen
       backgroundColor: Colors.transparent,
 
-      // Step 5.2: The stacked ListView
       body: ListView(
-        // 120px bottom padding ensures the last item clears the bottom navigation bar
+        // Padding follows the "Editorial Voice" rule for breathing room
         padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
         children: const [
           LiquidityHeroCard(),
@@ -37,20 +40,20 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
 
-      // Step 5.3: The Contextual Floating Action Button
+      // Step 5.3: Updated Contextual Floating Action Button
       floatingActionButton: Padding(
-        // Pushes the FAB up so it doesn't collide with your custom floating bottom nav
-        padding: const EdgeInsets.only(bottom: 5.0),
+        // Pushes the FAB up to clear the custom floating bottom navigation bar
+        padding: const EdgeInsets.only(bottom: 80.0),
         child: Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: const Color(0xFF005BBF), // primary
-            borderRadius: BorderRadius.circular(16), // Softer rounding (like the HTML)
+            color: colorScheme.primary, // Tied to universal theme
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
-              // Colored ambient shadow matching the DESIGN.md rules
+              // Ambient Shadow following DESIGN.md with theme-aware coloring
               BoxShadow(
-                color: const Color(0xFF005BBF).withValues(alpha: 0.4),
+                color: colorScheme.primary.withValues(alpha: 0.4),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -61,11 +64,11 @@ class HomeScreen extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: () {
-                // TODO: Wire this up to a transaction modal later!
+                // TODO: Wire this up to a transaction modal later
               },
-              child: const Icon(
+              child: Icon(
                 Icons.add,
-                color: Colors.white,
+                color: colorScheme.onPrimary, // High-contrast icon color
                 size: 28,
               ),
             ),

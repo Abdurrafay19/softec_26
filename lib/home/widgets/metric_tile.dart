@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,10 +18,13 @@ class MetricTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F4FA), // surface-container-low
+        // Uses surfaceContainerLow for structural zones per DESIGN.md
+        color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -34,7 +38,7 @@ class MetricTile extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
-              color: const Color(0xFF414754), // on-surface-variant
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),
@@ -43,8 +47,7 @@ class MetricTile extends StatelessWidget {
             style: GoogleFonts.manrope(
               fontSize: 24,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF181C20), // on-surface
-              // Tabular figures keep the decimal structures perfectly aligned
+              color: colorScheme.onSurface,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),

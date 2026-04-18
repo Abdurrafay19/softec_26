@@ -7,14 +7,20 @@ class RecentActivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access the theme for consistent styling across light and dark modes
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white, // surface-container-lowest
+        // Uses surfaceContainerLowest for the primary card surface
+        color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
+          // Ambient shadow tied to the theme's surface color
           BoxShadow(
-            color: const Color(0xFF181C20).withValues(alpha: 0.04),
+            color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
             offset: const Offset(0, 4),
           ),
@@ -30,10 +36,9 @@ class RecentActivitySection extends StatelessWidget {
             children: [
               Text(
                 'Recent\nActivity',
-                style: GoogleFonts.manrope(
-                  fontSize: 24,
+                style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF181C20),
+                  color: colorScheme.onSurface,
                   height: 1.2,
                   letterSpacing: -0.5,
                 ),
@@ -41,10 +46,9 @@ class RecentActivitySection extends StatelessWidget {
               TextButton.icon(
                 onPressed: () {},
                 style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF005BBF), // primary
+                  foregroundColor: colorScheme.primary, // Tied to primary theme color
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                // Reversing the icon to be on the right to match design
                 iconAlignment: IconAlignment.end,
                 icon: const Icon(Icons.download, size: 18),
                 label: Text(
@@ -61,7 +65,7 @@ class RecentActivitySection extends StatelessWidget {
           ),
           const SizedBox(height: 32),
 
-          // Column Headers
+          // Column Headers following the "Editorial Voice" guidelines
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -71,7 +75,7 @@ class RecentActivitySection extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5,
-                  color: const Color(0xFF414754),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -80,38 +84,38 @@ class RecentActivitySection extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5,
-                  color: const Color(0xFF414754),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 24),
 
-          // Data Rows (Using spacing instead of dividers per DESIGN.md)
-          const ActivityListItem(
+          // Data Rows using the finalized ActivityListItem
+          ActivityListItem(
             icon: Icons.cloud,
             title: 'AWS Infrastructure',
             date: 'Today, 2:45 PM',
             status: 'Completed',
-            baseColor: Color(0xFF005BBF), // primary
+            baseColor: colorScheme.primary,
           ),
           const SizedBox(height: 24),
 
-          const ActivityListItem(
+          ActivityListItem(
             icon: Icons.face,
             title: 'Stripe Inflow: Client Z',
             date: 'Yesterday, 11:20 AM',
             status: 'Completed',
-            baseColor: Color(0xFF006876), // secondary
+            baseColor: colorScheme.secondary,
           ),
           const SizedBox(height: 24),
 
-          const ActivityListItem(
+          ActivityListItem(
             icon: Icons.store,
             title: 'Apple Store Purchase',
             date: 'Oct 24, 09:15 AM',
             status: 'Pending',
-            baseColor: Color(0xFF9E4300), // tertiary
+            baseColor: colorScheme.tertiary,
           ),
         ],
       ),

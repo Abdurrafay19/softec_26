@@ -5,26 +5,28 @@ class InsightRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color rowBackgroundColor;
-  final Color iconBackgroundColor;
-  final Color iconColor;
+  // Pass the semantic color (e.g., colorScheme.secondary or colorScheme.tertiary)
+  final Color baseThemeColor;
+  final Color onBaseColor;
 
   const InsightRow({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.rowBackgroundColor,
-    required this.iconBackgroundColor,
-    required this.iconColor,
+    required this.baseThemeColor,
+    required this.onBaseColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: rowBackgroundColor,
+        // Dynamically creates the soft tint from the theme color
+        color: baseThemeColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -33,14 +35,10 @@ class InsightRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: iconBackgroundColor,
+              color: baseThemeColor.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: iconColor,
-            ),
+            child: Icon(icon, size: 20, color: onBaseColor),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -52,7 +50,7 @@ class InsightRow extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF181C20), // on-surface
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -60,7 +58,7 @@ class InsightRow extends StatelessWidget {
                   subtitle,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: const Color(0xFF414754), // on-surface-variant
+                    color: colorScheme.onSurfaceVariant,
                     height: 1.4,
                   ),
                 ),
