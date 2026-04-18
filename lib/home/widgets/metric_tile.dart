@@ -24,8 +24,16 @@ class MetricTile extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         // Uses surfaceContainerLow for structural zones per DESIGN.md
-        color: colorScheme.surfaceContainerLow,
+        color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            // Uses onSurface for a tinted ambient shadow
+            color: colorScheme.onSurface.withValues(alpha: 0.04),
+            blurRadius: 40,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

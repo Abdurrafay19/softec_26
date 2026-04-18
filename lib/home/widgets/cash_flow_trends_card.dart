@@ -87,17 +87,8 @@ class CashFlowTrendsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected ? colorScheme.surfaceContainerLowest : Colors.transparent,
+        color: isSelected ? colorScheme.surface : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: isSelected
-            ? [
-          BoxShadow(
-            color: colorScheme.onSurface.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          )
-        ]
-            : null,
       ),
       child: Text(
         label,
@@ -112,8 +103,6 @@ class CashFlowTrendsCard extends StatelessWidget {
 
   Widget _buildMockChart(ColorScheme colorScheme) {
     final barHeights = [0.4, 0.6, 0.55, 0.8, 0.95, 0.85, 0.7, 0.65];
-    final isHighlighted = [false, false, true, false, false, true, false, false];
-
     return SizedBox(
       height: 160,
       child: Row(
@@ -127,13 +116,8 @@ class CashFlowTrendsCard extends StatelessWidget {
                 height: 160 * barHeights[index],
                 decoration: BoxDecoration(
                   // Use primaryContainer for the soft bars and primary for the borders
-                  color: isHighlighted[index]
-                      ? colorScheme.primary.withValues(alpha: 0.3)
-                      : colorScheme.primary.withValues(alpha: 0.1),
+                  color: colorScheme.primary.withValues(alpha: 0.75),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                  border: isHighlighted[index]
-                      ? Border(top: BorderSide(color: colorScheme.primary, width: 2))
-                      : null,
                 ),
               ),
             ),

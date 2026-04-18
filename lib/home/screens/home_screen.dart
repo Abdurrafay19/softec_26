@@ -43,21 +43,13 @@ class HomeScreen extends StatelessWidget {
       // Step 5.3: Updated Contextual Floating Action Button
       floatingActionButton: Padding(
         // Pushes the FAB up to clear the custom floating bottom navigation bar
-        padding: const EdgeInsets.only(bottom: 80.0),
+        padding: const EdgeInsets.only(bottom: 100.0),
         child: Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
             color: colorScheme.primary, // Tied to universal theme
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              // Ambient Shadow following DESIGN.md with theme-aware coloring
-              BoxShadow(
-                color: colorScheme.primary.withValues(alpha: 0.4),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
           ),
           child: Material(
             color: Colors.transparent,

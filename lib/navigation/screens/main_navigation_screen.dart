@@ -1,12 +1,10 @@
-// lib/navigation/screens/main_navigation_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Import the Bottom Nav
 import '../widgets/bottom_nav.dart';
 
-// Import all 4 Feature Screens
+// Import all Feature Screens
 import '../../home/screens/home_screen.dart';
 import '../../analytics/screens/analytics_screen.dart';
 import '../../profile/screens/profile_screen.dart';
@@ -30,9 +28,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the global theme tokens
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFDFFF5),
+        // Colors.transparent lets the scaffoldBackgroundColor bleed through naturally
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         titleSpacing: 24,
@@ -41,15 +45,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             Container(
               width: 40,
               height: 40,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1A73E8),
+              decoration: BoxDecoration(
+                // Dynamic theme primary container
+                color: colorScheme.primaryContainer,
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
               child: Text(
-                'S',
+                'S', // Consider updating this to an icon or your official logo later
                 style: GoogleFonts.manrope(
-                  color: Colors.white,
+                  // High contrast text inside the primary container
+                  color: colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.w800,
                   fontSize: 18,
                 ),
@@ -59,7 +65,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             Text(
               'The Fiscal Architect',
               style: GoogleFonts.manrope(
-                color: const Color(0xFF0F172A),
+                // Adapts automatically to Light/Dark backgrounds
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
                 letterSpacing: -0.5,
@@ -69,7 +76,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.menu, color: Color(0xFF64748B)),
+            // Uses onSurfaceVariant for secondary/tertiary UI elements
+            icon: Icon(Icons.menu, color: colorScheme.onSurfaceVariant),
             onPressed: () {},
           ),
           const SizedBox(width: 16),

@@ -11,7 +11,7 @@ class LiquidityHeroCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     // Logic for trend visualization
-    final double trendValue = -1.0;
+    final double trendValue = 15.0;
     final bool isPositive = trendValue >= 0;
 
     // Define trend colors based on state
@@ -107,13 +107,6 @@ class LiquidityHeroCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: colorScheme.primary,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary.withValues(alpha: 0.3),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -151,7 +144,7 @@ class LiquidityHeroCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Material(
-                    color: Colors.transparent,
+                    color: colorScheme.surfaceContainerHigh,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {},
