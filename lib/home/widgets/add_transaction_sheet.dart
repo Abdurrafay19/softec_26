@@ -7,15 +7,27 @@ import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
 class AddTransactionSheet extends StatefulWidget {
-  const AddTransactionSheet({super.key});
+  final bool initialIsMoneyIn; // Add this line
+
+  const AddTransactionSheet({
+    super.key,
+    this.initialIsMoneyIn = false, // Default to Expense (Money Out)
+  });
 
   @override
   State<AddTransactionSheet> createState() => _AddTransactionSheetState();
 }
 
 class _AddTransactionSheetState extends State<AddTransactionSheet> {
+  @override
+  void initState() {
+    super.initState();
+    isMoneyIn = widget.initialIsMoneyIn; // Initialize from widget
+  }
+
+  // ... rest of your code remains the same ...
   // --- Form State ---
-  bool isMoneyIn = false; // Default to 'Money Out' as per hackathon tip
+  late bool isMoneyIn = false; // Default to 'Money Out' as per hackathon tip
   bool isPaid = true;
   DateTime selectedDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
@@ -247,7 +259,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       Switch(
                         value: isPaid,
                         onChanged: (val) => setState(() => isPaid = val),
-                        activeColor: colorScheme.primary,
+                        activeThumbColor: colorScheme.primary,
                       ),
                     ],
                   ),
@@ -326,7 +338,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
           Switch(
             value: isPaid,
             onChanged: (val) => setState(() => isPaid = val),
-            activeColor: colorScheme.primary,
+            activeThumbColor: colorScheme.primary,
           ),
         ],
       ),

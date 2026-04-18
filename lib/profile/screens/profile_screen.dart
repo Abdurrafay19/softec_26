@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             value: _biometricsEnabled,
                             onChanged: (value) => setState(() => _biometricsEnabled = value),
                             // Ties the active switch state to your dynamic primary color
-                            activeColor: colorScheme.primary,
+                            activeThumbColor: colorScheme.primary,
                           ),
                         ),
                         SettingsListTile(
