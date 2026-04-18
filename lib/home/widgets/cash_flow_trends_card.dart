@@ -112,7 +112,6 @@ class CashFlowTrendsCard extends StatelessWidget {
 
   Widget _buildMockChart(ColorScheme colorScheme) {
     final barHeights = [0.4, 0.6, 0.55, 0.8, 0.95, 0.85, 0.7, 0.65];
-    final barOpacities = [0.1, 0.1, 0.2, 0.1, 0.1, 0.3, 0.1, 0.1];
     final isHighlighted = [false, false, true, false, false, true, false, false];
 
     return SizedBox(
@@ -127,8 +126,10 @@ class CashFlowTrendsCard extends StatelessWidget {
               child: Container(
                 height: 160 * barHeights[index],
                 decoration: BoxDecoration(
-                  // Now uses the theme's primary color with varying opacity
-                  color: colorScheme.primary.withValues(alpha: barOpacities[index]),
+                  // Use primaryContainer for the soft bars and primary for the borders
+                  color: isHighlighted[index]
+                      ? colorScheme.primary.withValues(alpha: 0.3)
+                      : colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                   border: isHighlighted[index]
                       ? Border(top: BorderSide(color: colorScheme.primary, width: 2))

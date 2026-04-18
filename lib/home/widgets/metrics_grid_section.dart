@@ -6,7 +6,9 @@ class MetricsGridSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
       children: [
         Row(
           children: [
@@ -15,21 +17,23 @@ class MetricsGridSection extends StatelessWidget {
                 icon: Icons.account_balance_wallet,
                 title: 'NET CASH',
                 amount: '\$14.2k',
-                iconColor: Color(0xFF006876), // secondary
+                // Secondary color is used for "Net Cash" per your HTML design
+                iconColor: colorScheme.primary,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: MetricTile(
                 icon: Icons.speed,
                 title: 'BURN RATE',
                 amount: '\$8.4k',
-                iconColor: Color(0xFF9E4300), // tertiary
+                // Tertiary color is used for "Burn Rate"
+                iconColor: colorScheme.tertiary,
               ),
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
@@ -37,16 +41,16 @@ class MetricsGridSection extends StatelessWidget {
                 icon: Icons.input,
                 title: 'INFLOW',
                 amount: '\$42.1k',
-                iconColor: Color(0xFF005BBF), // primary
+                iconColor: colorScheme.primary,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: MetricTile(
                 icon: Icons.output,
                 title: 'OUTFLOW',
                 amount: '\$27.9k',
-                iconColor: Color(0xFFBA1A1A), // error
+                iconColor: colorScheme.error,
               ),
             ),
           ],

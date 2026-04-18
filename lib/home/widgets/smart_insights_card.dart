@@ -12,7 +12,8 @@ class SmartInsightsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLowest, // #ffffff in Light Mode
+        // Responds to Light/Dark Mode automatically
+        color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -40,6 +41,8 @@ class SmartInsightsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
+
+          // Insight items using semantic theme colors
           InsightRow(
             icon: Icons.payments,
             title: 'Invoice #884 Paid',
@@ -47,24 +50,31 @@ class SmartInsightsCard extends StatelessWidget {
             baseThemeColor: colorScheme.secondary,
             onBaseColor: colorScheme.onSecondaryContainer,
           ),
+
           const SizedBox(height: 16),
+
           InsightRow(
             icon: Icons.schedule,
             title: 'Rent Due Tomorrow',
             subtitle: 'Automatic transfer of \$3,500 scheduled.',
             baseThemeColor: colorScheme.tertiary,
-            onBaseColor: colorScheme.onTertiaryFixedVariant,
+            onBaseColor: colorScheme.onTertiaryContainer,
           ),
+
           const SizedBox(height: 24),
+
           SizedBox(
             width: double.infinity,
             child: TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: colorScheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               onPressed: () {},
               child: Text(
                 'View All Alerts',
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
                 ),
               ),
             ),

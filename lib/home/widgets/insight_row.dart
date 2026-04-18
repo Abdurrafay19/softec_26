@@ -5,7 +5,6 @@ class InsightRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  // Pass the semantic color (e.g., colorScheme.secondary or colorScheme.tertiary)
   final Color baseThemeColor;
   final Color onBaseColor;
 
@@ -25,7 +24,7 @@ class InsightRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        // Dynamically creates the soft tint from the theme color
+        // Dynamically creates a 15% opacity tint of whatever the theme color is
         color: baseThemeColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
       ),
