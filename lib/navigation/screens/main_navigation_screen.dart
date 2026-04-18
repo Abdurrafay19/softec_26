@@ -32,7 +32,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF7F9FF),
+        backgroundColor: const Color(0xFFFDFFF5),
         elevation: 0,
         scrolledUnderElevation: 0,
         titleSpacing: 24,

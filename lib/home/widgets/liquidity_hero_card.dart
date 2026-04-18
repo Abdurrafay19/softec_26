@@ -6,15 +6,27 @@ class LiquidityHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access the global theme data
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    // Logic for trend visualization
+    final double trendValue = -1.0;
+    final bool isPositive = trendValue >= 0;
+
+    // Define trend colors based on state
+    final Color trendBaseColor = isPositive ? Colors.green : Colors.red;
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white, // surface-container-lowest
+        // Uses surfaceContainerLowest from your AppTheme
+        color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          // Ambient shadow matching DESIGN.md
           BoxShadow(
-            color: const Color(0xFF181C20).withValues(alpha: 0.04),
+            // Uses onSurface for a tinted ambient shadow
+            color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
             offset: const Offset(0, 4),
           ),
@@ -29,7 +41,8 @@ class LiquidityHeroCard extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.2,
-              color: const Color(0xFF414754), // on-surface-variant
+              // Uses onSurfaceVariant for secondary text labels
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
@@ -39,8 +52,7 @@ class LiquidityHeroCard extends StatelessWidget {
               fontSize: 48,
               fontWeight: FontWeight.w800,
               letterSpacing: -2.0,
-              color: const Color(0xFF181C20), // on-surface
-              // Forces numbers to align perfectly in a grid
+              color: colorScheme.onSurface,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
@@ -48,31 +60,26 @@ class LiquidityHeroCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF69E8FE), // secondary-container
+                  color: trendBaseColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.trending_up,
-                      color: Color(0xFF006774),
+                    Icon(
+                      isPositive ? Icons.trending_up : Icons.trending_down,
+                      color: isPositive ? Colors.green.shade800 : Colors.red.shade800,
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '+12.4%',
+                      '${isPositive ? '+' : ''}${trendValue.toStringAsFixed(1)}%',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: const Color(
-                          0xFF006774,
-                        ), // on-secondary-container
+                        color: isPositive ? Colors.green.shade800 : Colors.red.shade800,
                       ),
                     ),
                   ],
@@ -83,7 +90,7 @@ class LiquidityHeroCard extends StatelessWidget {
                 'vs last month',
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  color: const Color(0xFF414754),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -98,16 +105,19 @@ class LiquidityHeroCard extends StatelessWidget {
                 child: Container(
                   height: 64,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF005BBF), Color(0xFF1A73E8)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.primaryContainer,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF005BBF).withValues(alpha: 0.2),
-                        blurRadius: 16,
+                        color: colorScheme.primary.withValues(alpha: 0.3),
+                        blurRadius: 24,
                         offset: const Offset(0, 8),
                       ),
                     ],
@@ -120,14 +130,15 @@ class LiquidityHeroCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.add, color: Colors.white),
+                          Icon(Icons.add, color: colorScheme.onPrimary),
                           const SizedBox(width: 8),
                           Text(
                             'Add Funds',
                             style: GoogleFonts.inter(
-                              color: Colors.white,
+                              color: colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ],
@@ -142,7 +153,8 @@ class LiquidityHeroCard extends StatelessWidget {
                 child: Container(
                   height: 64,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE5E8EE), // surface-container-high
+                    // Uses surfaceContainerHigh for the secondary neutral button
+                    color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Material(
@@ -154,7 +166,7 @@ class LiquidityHeroCard extends StatelessWidget {
                         child: Text(
                           'History',
                           style: GoogleFonts.inter(
-                            color: const Color(0xFF414754),
+                            color: colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),

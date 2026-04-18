@@ -19,12 +19,14 @@ class ActivityListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access the global color scheme
+    final colorScheme = Theme.of(context).colorScheme;
     final isCompleted = status == 'Completed';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Soft Icon Avatar
+        // Soft Icon Avatar using the provided baseColor with theme-friendly opacity
         Container(
           width: 48,
           height: 48,
@@ -50,7 +52,8 @@ class ActivityListItem extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF181C20), // on-surface
+                  // Uses onSurface for high-contrast primary text
+                  color: colorScheme.onSurface,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -60,7 +63,8 @@ class ActivityListItem extends StatelessWidget {
                 date,
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: const Color(0xFF414754), // on-surface-variant
+                  // Uses onSurfaceVariant for lower-priority metadata
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -74,8 +78,10 @@ class ActivityListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: isCompleted
-                ? const Color(0xFF69E8FE).withValues(alpha: 0.2) // cyan tint
-                : const Color(0xFFE5E8EE), // gray tint for pending
+            // Completed uses secondaryContainer tint
+                ? colorScheme.secondaryContainer.withValues(alpha: 0.2)
+            // Pending uses a neutral surface container tint
+                : colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(100),
           ),
           child: Text(
@@ -84,8 +90,8 @@ class ActivityListItem extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.bold,
               color: isCompleted
-                  ? const Color(0xFF006774) // dark cyan
-                  : const Color(0xFF414754), // dark gray
+                  ? colorScheme.onSecondaryContainer
+                  : colorScheme.onSurfaceVariant,
             ),
           ),
         ),

@@ -6,14 +6,17 @@ class CashFlowTrendsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access the dynamic color scheme
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF181C20).withValues(alpha: 0.04),
+            color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
             offset: const Offset(0, 4),
           ),
@@ -26,7 +29,6 @@ class CashFlowTrendsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Wrap the text column in Expanded so it shrinks/wraps safely
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +38,7 @@ class CashFlowTrendsCard extends StatelessWidget {
                       style: GoogleFonts.manrope(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF181C20),
+                        color: colorScheme.onSurface,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -45,54 +47,52 @@ class CashFlowTrendsCard extends StatelessWidget {
                       'Projection for the next 30 days',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: const Color(0xFF414754),
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              // 2. Add a little breathing room between the text and the toggle
               const SizedBox(width: 16),
-              // 3. The toggle remains un-expanded so it keeps its exact shape
-              _buildSegmentedToggle(),
+              _buildSegmentedToggle(context, colorScheme),
             ],
           ),
           const SizedBox(height: 32),
-          _buildMockChart(),
+          _buildMockChart(colorScheme),
           const SizedBox(height: 16),
-          _buildXAxisLabels(),
+          _buildXAxisLabels(colorScheme),
         ],
       ),
     );
   }
 
-  Widget _buildSegmentedToggle() {
+  Widget _buildSegmentedToggle(BuildContext context, ColorScheme colorScheme) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F4FA), // surface-container-low
+        color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          _buildToggleOption('1M', true),
-          _buildToggleOption('3M', false),
-          _buildToggleOption('6M', false),
+          _buildToggleOption(context, colorScheme, '1M', true),
+          _buildToggleOption(context, colorScheme, '3M', false),
+          _buildToggleOption(context, colorScheme, '6M', false),
         ],
       ),
     );
   }
 
-  Widget _buildToggleOption(String label, bool isSelected) {
+  Widget _buildToggleOption(BuildContext context, ColorScheme colorScheme, String label, bool isSelected) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.white : Colors.transparent,
+        color: isSelected ? colorScheme.surfaceContainerLowest : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         boxShadow: isSelected
             ? [
           BoxShadow(
-            color: const Color(0xFF181C20).withValues(alpha: 0.05),
+            color: colorScheme.onSurface.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           )
@@ -104,19 +104,15 @@ class CashFlowTrendsCard extends StatelessWidget {
         style: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          color: isSelected ? const Color(0xFF181C20) : const Color(0xFF414754),
+          color: isSelected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
         ),
       ),
     );
   }
 
-  // Step 1.3: The Stylized Mock Chart
-  Widget _buildMockChart() {
-    // Heights as percentages (0.0 to 1.0)
+  Widget _buildMockChart(ColorScheme colorScheme) {
     final barHeights = [0.4, 0.6, 0.55, 0.8, 0.95, 0.85, 0.7, 0.65];
-    // Opacities matching the visual depth in the HTML design
     final barOpacities = [0.1, 0.1, 0.2, 0.1, 0.1, 0.3, 0.1, 0.1];
-    // The two highlighted bars with top borders
     final isHighlighted = [false, false, true, false, false, true, false, false];
 
     return SizedBox(
@@ -131,10 +127,11 @@ class CashFlowTrendsCard extends StatelessWidget {
               child: Container(
                 height: 160 * barHeights[index],
                 decoration: BoxDecoration(
-                  color: const Color(0xFF005BBF).withValues(alpha: barOpacities[index]),
+                  // Now uses the theme's primary color with varying opacity
+                  color: colorScheme.primary.withValues(alpha: barOpacities[index]),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                   border: isHighlighted[index]
-                      ? const Border(top: BorderSide(color: Color(0xFF005BBF), width: 2))
+                      ? Border(top: BorderSide(color: colorScheme.primary, width: 2))
                       : null,
                 ),
               ),
@@ -145,7 +142,7 @@ class CashFlowTrendsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildXAxisLabels() {
+  Widget _buildXAxisLabels(ColorScheme colorScheme) {
     final labels = ['WK 01', 'WK 02', 'WK 03', 'WK 04', 'WK 05', 'WK 06', 'WK 07', 'WK 08'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,7 +155,7 @@ class CashFlowTrendsCard extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.0,
-                color: const Color(0xFF414754), // on-surface-variant
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
           ),
