@@ -205,7 +205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: CircleAvatar(
-                    backgroundColor: colorScheme.surfaceVariant,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
                     child: Icon(tx.icon, color: colorScheme.primary, size: 20),
                   ),
                   title: Text(
