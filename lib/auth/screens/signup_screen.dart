@@ -128,6 +128,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             text: 'Complete Setup',
                             icon: Icons.check_circle_outline,
                             onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              );
                               // Handle signup logic here using:
                               // _nameController.text
                               // _enableBiometrics
@@ -138,30 +142,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     
                     const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Already have an account?",
-                          style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          },
-                          child: Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    
                     const Spacer(),
                   ],
                 ),
