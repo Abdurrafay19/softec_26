@@ -9,6 +9,7 @@ class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
 
   @override
+
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
@@ -18,7 +19,7 @@ class AnalyticsScreen extends StatelessWidget {
           style: GoogleFonts.manrope(
             fontSize: 38,
             fontWeight: FontWeight.w800,
-            color: const Color(0xFF181C20),
+            color: Theme.of(context).colorScheme.secondary,
             letterSpacing: -1.5,
             height: 1.1,
           ),

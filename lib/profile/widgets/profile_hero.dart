@@ -50,7 +50,6 @@ class ProfileHeroSection extends StatelessWidget {
               ),
             ),
             
-         
             Positioned(
               bottom: 0,
               right: 0,
@@ -93,42 +92,7 @@ class ProfileHeroSection extends StatelessWidget {
             letterSpacing: -0.5, 
             color: Theme.of(context).colorScheme.onSurface,
           ),
-        ),
-        
-        const SizedBox(height: 4),
-        Text(
-          "Founder & CEO, Lumen Creative Agency",
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        
-        const SizedBox(height: 16),
-          Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha:0.2), // Light teal fill
-            borderRadius: BorderRadius.circular(100), 
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.verified, 
-                size: 16, 
-                color: Theme.of(context).colorScheme.secondary, // Teal icon
-              ),
-              const SizedBox(width: 6),
-              Text(
-                "Premium SME Account",
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.secondary, // Teal text
-                ),
-              ),
-            ],
-          ),
-        ),
+        ),  
       ],
     );
   }
