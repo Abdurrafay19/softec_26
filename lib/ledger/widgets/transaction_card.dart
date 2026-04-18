@@ -52,7 +52,6 @@ class TransactionCard extends StatelessWidget {
         break;
       case TransactionStatus.pending:
       case TransactionStatus.completed:
-      default:
       // Neutral pill for standard transactions
         pillBgColor = colorScheme.surfaceContainerHighest;
         pillTextColor = colorScheme.onSurfaceVariant;
