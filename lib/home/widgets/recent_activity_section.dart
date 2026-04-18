@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../ledger/transaction_provider.dart';
 import 'activity_list_item.dart';
 
-class RecentActivitySection extends StatelessWidget {
+class RecentActivitySection extends ConsumerWidget {
   const RecentActivitySection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Access the theme for consistent styling across light and dark modes
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    
+    // Watch the transactions from the provider
+    final summary = ref.watch(transactionsProvider);
+    final transactions = summary.transactions;
+
+    // Get only the most recent 3 transactions
+    final recentTransactions = transactions.take(3).toList();
 
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        // Uses surfaceContainerLowest for the primary card surface
         color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          // Ambient shadow tied to the theme's surface color
           BoxShadow(
             color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
@@ -29,7 +36,6 @@ class RecentActivitySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,7 +52,7 @@ class RecentActivitySection extends StatelessWidget {
               TextButton.icon(
                 onPressed: () {},
                 style: TextButton.styleFrom(
-                  foregroundColor: colorScheme.primary, // Tied to primary theme color
+                  foregroundColor: colorScheme.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 iconAlignment: IconAlignment.end,
@@ -65,7 +71,6 @@ class RecentActivitySection extends StatelessWidget {
           ),
           const SizedBox(height: 32),
 
-          // Column Headers following the "Editorial Voice" guidelines
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -91,34 +96,43 @@ class RecentActivitySection extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // Data Rows using the finalized ActivityListItem
-          ActivityListItem(
-            icon: Icons.cloud,
-            title: 'AWS Infrastructure',
-            date: 'Today, 2:45 PM',
-            status: 'Completed',
-            baseColor: colorScheme.primary,
-          ),
-          const SizedBox(height: 24),
-
-          ActivityListItem(
-            icon: Icons.face,
-            title: 'Stripe Inflow: Client Z',
-            date: 'Yesterday, 11:20 AM',
-            status: 'Completed',
-            baseColor: colorScheme.secondary,
-          ),
-          const SizedBox(height: 24),
-
-          ActivityListItem(
-            icon: Icons.store,
-            title: 'Apple Store Purchase',
-            date: 'Oct 24, 09:15 AM',
-            status: 'Pending',
-            baseColor: colorScheme.tertiary,
-          ),
+          if (recentTransactions.isEmpty)
+            Center(
+              child: Text(
+                'No activity yet.',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: colorScheme.outline,
+                ),
+              ),
+            )
+          else
+            ...recentTransactions.map((tx) => Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: ActivityListItem(
+                icon: _getIconForCategory(tx.category),
+                title: tx.name,
+                date: DateFormat('MMM dd, hh:mm a').format(tx.date),
+                status: 'Completed',
+                baseColor: tx.isMoneyIn ? colorScheme.primary : colorScheme.error,
+              ),
+            )),
         ],
       ),
     );
+  }
+
+  IconData _getIconForCategory(String category) {
+    switch (category) {
+      case 'Food': return Icons.restaurant;
+      case 'Bills': return Icons.receipt_long;
+      case 'Shopping': return Icons.shopping_bag;
+      case 'Transport': return Icons.directions_car;
+      case 'Entertainment': return Icons.movie;
+      case 'Health': return Icons.medical_services;
+      case 'Business': return Icons.business_center;
+      case 'Income': return Icons.payments;
+      default: return Icons.category;
+    }
   }
 }
