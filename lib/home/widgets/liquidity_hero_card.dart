@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/add_transaction_sheet.dart';
 
 class LiquidityHeroCard extends StatelessWidget {
   const LiquidityHeroCard({super.key});

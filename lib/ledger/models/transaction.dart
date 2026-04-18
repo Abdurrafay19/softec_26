@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'transaction.g.dart'; // This will be generated
+part 'transaction.g.dart';
 
 @HiveType(typeId: 0)
 class Transaction extends HiveObject {
@@ -11,29 +11,25 @@ class Transaction extends HiveObject {
   final double amount;
 
   @HiveField(2)
-  final bool isMoneyIn;
+  final bool isMoneyIn; // true for "In", false for "Out"
 
   @HiveField(3)
-  final bool isPaid;
+  final String name;
 
   @HiveField(4)
-  final String vendorName;
-
-  @HiveField(5)
   final String description;
 
-  @HiveField(6)
+  @HiveField(5)
   final DateTime date;
 
-  @HiveField(7)
-  final String category; // e.g., "Pending Receivable", "Income", etc.
+  @HiveField(6)
+  final String category;
 
   Transaction({
     required this.id,
     required this.amount,
     required this.isMoneyIn,
-    required this.isPaid,
-    required this.vendorName,
+    required this.name,
     required this.description,
     required this.date,
     required this.category,

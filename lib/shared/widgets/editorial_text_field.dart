@@ -7,6 +7,7 @@ class EditorialTextField extends StatelessWidget {
   final String? helperText;
   final bool isPassword;
   final Widget? trailingLabelAction;
+  final TextEditingController? controller; // Added controller
 
   const EditorialTextField({
     super.key,
@@ -15,6 +16,7 @@ class EditorialTextField extends StatelessWidget {
     this.helperText,
     this.isPassword = false,
     this.trailingLabelAction,
+    this.controller, // Added controller
   });
 
   @override
@@ -35,18 +37,16 @@ class EditorialTextField extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  // Changed from 'secondary' to 'onSurface' to maintain the strict,
-                  // professional editorial voice instead of looking too colorful.
                   color: colorScheme.onSurface,
                 ),
               ),
             ),
-            ?trailingLabelAction,
+            if (trailingLabelAction != null) trailingLabelAction!, // Fixed syntax error
           ],
         ),
         TextFormField(
+          controller: controller, // Added controller
           obscureText: isPassword,
-          // Ensures the typed text adapts to light/dark mode
           style: GoogleFonts.inter(
             color: colorScheme.onSurface,
             fontWeight: FontWeight.w500,
@@ -58,7 +58,6 @@ class EditorialTextField extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
             filled: true,
-            // Replaced 0xFFE5E8EE with the exact token requested in DESIGN.md
             fillColor: colorScheme.surfaceContainerHighest,
             contentPadding: const EdgeInsets.all(16),
             border: const UnderlineInputBorder(

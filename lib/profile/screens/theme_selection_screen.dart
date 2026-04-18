@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// Assuming you have this widget available based on your previous code
+import '../../core/theme_provider.dart';
 import '../widgets/settings_group_container.dart';
 
-class ThemeSelectionScreen extends StatefulWidget {
+class ThemeSelectionScreen extends ConsumerWidget {
   const ThemeSelectionScreen({super.key});
 
   @override
-  State<ThemeSelectionScreen> createState() => _ThemeSelectionScreenState();
-}
-
-class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
-  // This state determines which radio is currently selected.
-  // Note: To make the theme actually change app-wide, you will need to tie this
-  // to your state management solution (Provider, Riverpod, BLoC, etc.) and update
-  // the themeMode property in your main.dart MaterialApp.
-  ThemeMode _selectedTheme = ThemeMode.system;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final selectedTheme = ref.watch(themeProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -55,32 +45,36 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
                 ),
               ),
             ),
-
-            // Using your container to maintain the "No-Line" stacked paper look
             SettingsGroupContainer(
               children: [
                 _buildThemeRadio(
                   context: context,
+                  ref: ref,
                   title: 'System Default',
                   subtitle: 'Adapts to your device settings',
                   icon: Icons.brightness_auto_outlined,
                   value: ThemeMode.system,
+                  groupValue: selectedTheme,
                   iconColor: colorScheme.primary,
                 ),
                 _buildThemeRadio(
                   context: context,
+                  ref: ref,
                   title: 'Light Theme',
                   subtitle: 'Crisp white and soft grays',
                   icon: Icons.light_mode_outlined,
                   value: ThemeMode.light,
+                  groupValue: selectedTheme,
                   iconColor: colorScheme.secondary,
                 ),
                 _buildThemeRadio(
                   context: context,
+                  ref: ref,
                   title: 'Dark Theme',
                   subtitle: 'Deep charcoal and muted blues',
                   icon: Icons.dark_mode_outlined,
                   value: ThemeMode.dark,
+                  groupValue: selectedTheme,
                   iconColor: colorScheme.tertiary,
                 ),
               ],
@@ -91,32 +85,28 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
     );
   }
 
-  // A custom builder for the radio rows to match your SettingsListTile aesthetic
   Widget _buildThemeRadio({
     required BuildContext context,
+    required WidgetRef ref,
     required String title,
     required String subtitle,
     required IconData icon,
     required ThemeMode value,
+    required ThemeMode groupValue,
     required Color iconColor,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    //final isSelected = _selectedTheme == value;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          setState(() {
-            _selectedTheme = value;
-          });
-          // TODO: Dispatch state update to your global theme manager here
+          ref.read(themeProvider.notifier).state = value;
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           child: Row(
             children: [
-              // Tinted Icon Box
               Container(
                 width: 40,
                 height: 40,
@@ -127,8 +117,6 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
                 child: Icon(icon, color: iconColor, size: 20),
               ),
               const SizedBox(width: 16),
-
-              // Text Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,20 +140,14 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(width: 16),
-
-              // The active radio indicator
               Radio<ThemeMode>(
                 value: value,
-                groupValue: _selectedTheme,
-                activeColor: colorScheme.primary, // Dynamically matches Material You
+                groupValue: groupValue,
+                activeColor: colorScheme.primary,
                 onChanged: (ThemeMode? newValue) {
                   if (newValue != null) {
-                    setState(() {
-                      _selectedTheme = newValue;
-                    });
-                    // TODO: Dispatch state update to your global theme manager here
+                    ref.read(themeProvider.notifier).state = newValue;
                   }
                 },
               ),

@@ -121,7 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               value: _enableBiometrics,
-                              activeColor: colorScheme.primary,
+                              activeThumbColor: colorScheme.primary,
                               onChanged: (bool value) {
                                 setState(() {
                                   _enableBiometrics = value;
