@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/database/hive_service.dart';
 import '../../ledger/models/transaction.dart';
+import '../../ledger/transaction_provider.dart';
 import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
-class AddTransactionSheet extends StatefulWidget {
+class AddTransactionSheet extends ConsumerStatefulWidget {
   final bool initialIsMoneyIn;
 
   const AddTransactionSheet({
@@ -15,10 +16,10 @@ class AddTransactionSheet extends StatefulWidget {
   });
 
   @override
-  State<AddTransactionSheet> createState() => _AddTransactionSheetState();
+  ConsumerState<AddTransactionSheet> createState() => _AddTransactionSheetState();
 }
 
-class _AddTransactionSheetState extends State<AddTransactionSheet> {
+class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
   late bool isMoneyIn;
   DateTime selectedDate = DateTime.now();
   String selectedCategory = 'General';
@@ -86,7 +87,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       category: selectedCategory,
     );
 
-    await HiveService.addTransaction(newTransaction);
+    // Use Riverpod to save and notify listeners
+    await ref.read(transactionsProvider.notifier).addTransaction(newTransaction);
+    
     if (mounted) Navigator.pop(context);
   }
 
@@ -120,7 +123,6 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             ),
             const SizedBox(height: 32),
 
-            // In/Out Toggle
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
@@ -150,7 +152,6 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             ),
             const SizedBox(height: 32),
 
-            // Amount Field
             TextField(
               controller: _amountController,
               autofocus: true,
@@ -186,7 +187,6 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             ),
             const SizedBox(height: 24),
 
-            // Date & Category Selection Row
             Row(
               children: [
                 Expanded(

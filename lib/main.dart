@@ -11,6 +11,7 @@ void main() async {
 
   // Initialize Hive
   await HiveService.init();
+
   
   // Wrap the entire app in ProviderScope for Riverpod
   runApp(

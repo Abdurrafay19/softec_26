@@ -1,72 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-// Import your beautiful modular widgets
+import '../transaction_provider.dart';
 import '../widgets/ledger_search_bar.dart';
 import '../widgets/filter_chip_row.dart';
 import '../widgets/transaction_group_header.dart';
 import '../widgets/transaction_card.dart';
 
-
-
-
-
-
-class LedgerScreen extends StatefulWidget {
+class LedgerScreen extends ConsumerStatefulWidget {
   const LedgerScreen({super.key});
 
   @override
-  State<LedgerScreen> createState() => _LedgerScreenState();
+  ConsumerState<LedgerScreen> createState() => _LedgerScreenState();
 }
 
-class _LedgerScreenState extends State<LedgerScreen> {
+class _LedgerScreenState extends ConsumerState<LedgerScreen> {
   int _selectedFilterIndex = 0;
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-
-  static const List<_TransactionData> _recentTransactions = [
-    _TransactionData(
-      icon: Icons.cloud,
-      title: 'Amazon Web Services',
-      date: 'May 24, 2024 • Cloud Infrastructure',
-      amount: -1240.50,
-      status: TransactionStatus.completed,
-    ),
-    _TransactionData(
-      icon: Icons.payments,
-      title: 'Client Deposit: Nova Corp',
-      date: 'May 23, 2024 • Invoice #8821',
-      amount: 5500.00,
-      status: TransactionStatus.received,
-    ),
-    _TransactionData(
-      icon: Icons.design_services,
-      title: 'Figma Subscription',
-      date: 'May 22, 2024 • Software & Tools',
-      amount: -45.00,
-      status: TransactionStatus.completed,
-    ),
-    _TransactionData(
-      icon: Icons.restaurant,
-      title: 'The Daily Grind Cafe',
-      date: 'May 20, 2024 • Meals & Entertainment',
-      amount: -32.40,
-      status: TransactionStatus.completed,
-    ),
-    _TransactionData(
-      icon: Icons.history,
-      title: 'Apple Store Refund',
-      date: 'May 18, 2024 • Hardware Return',
-      amount: 199.00,
-      status: TransactionStatus.completed,
-    ),
-    _TransactionData(
-      icon: Icons.warning_rounded,
-      title: 'Office Rent Auto-Pay',
-      date: 'May 15, 2024 • Facilities',
-      amount: -2850.00,
-      status: TransactionStatus.declined,
-    ),
-  ];
 
   @override
   void dispose() {
@@ -74,68 +26,47 @@ class _LedgerScreenState extends State<LedgerScreen> {
     super.dispose();
   }
 
-  bool _matchesSearch(_TransactionData transaction) {
-    if (_searchQuery.isEmpty) {
-      return true;
-    }
-
-    final query = _searchQuery.toLowerCase();
-    final amountText = transaction.amount.abs().toStringAsFixed(2);
-
-    return transaction.title.toLowerCase().contains(query) ||
-        transaction.date.toLowerCase().contains(query) ||
-        amountText.contains(query);
-  }
-
-  List<_TransactionData> _applyFilter(List<_TransactionData> transactions) {
-    switch (_selectedFilterIndex) {
-      case 1:
-        return transactions.where((transaction) => transaction.amount > 0).toList();
-      case 2:
-        return transactions.where((transaction) => transaction.amount < 0).toList();
-      default:
-        return transactions;
+  IconData _getIconForCategory(String category) {
+    switch (category) {
+      case 'Food': return Icons.restaurant;
+      case 'Bills': return Icons.receipt_long;
+      case 'Shopping': return Icons.shopping_bag;
+      case 'Transport': return Icons.directions_car;
+      case 'Entertainment': return Icons.movie;
+      case 'Health': return Icons.medical_services;
+      case 'Business': return Icons.business_center;
+      case 'Income': return Icons.payments;
+      default: return Icons.category;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final filteredTransactions = _applyFilter(_recentTransactions)
-        .where(_matchesSearch)
-        .toList();
-    final List<Widget> transactionCards = filteredTransactions
-        .expand<Widget>(
-          (transaction) => [
-            TransactionCard(
-              icon: transaction.icon,
-              title: transaction.title,
-              date: transaction.date,
-              amount: transaction.amount,
-              status: transaction.status,
-            ),
-            const SizedBox(height: 12),
-          ],
-        )
-        .toList();
+    // Watch the summary instead of the list
+    final summary = ref.watch(transactionsProvider);
+    final transactions = summary.transactions;
 
-    if (transactionCards.isNotEmpty) {
-      transactionCards.removeLast();
-    }
+    // Apply Search Filter
+    final filteredBySearch = transactions.where((tx) {
+      if (_searchQuery.isEmpty) return true;
+      final query = _searchQuery.toLowerCase();
+      return tx.name.toLowerCase().contains(query) || 
+             tx.category.toLowerCase().contains(query) ||
+             tx.description.toLowerCase().contains(query);
+    }).toList();
+
+    // Apply Tab Filter (All, In, Out)
+    final filteredTransactions = filteredBySearch.where((tx) {
+      if (_selectedFilterIndex == 1) return tx.isMoneyIn;
+      if (_selectedFilterIndex == 2) return !tx.isMoneyIn;
+      return true;
+    }).toList();
 
     return Scaffold(
-      // Crucial: Keeps the background transparent so the app background bleeds through
       backgroundColor: Colors.transparent,
-
       body: ListView(
-        // The Magic Padding:
-        // 120px top to clear the frosted AppBar
-        // 120px bottom to clear the frosted BottomNav
-        // 24px sides for that extreme breathing room
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 120),
-
-        // Hides the default scrollbar to keep the UI perfectly clean
         physics: const BouncingScrollPhysics(),
-
         children: [
           LedgerSearchBar(
             controller: _searchController,
@@ -147,29 +78,33 @@ class _LedgerScreenState extends State<LedgerScreen> {
             selectedIndex: _selectedFilterIndex,
             onSelected: (index) => setState(() => _selectedFilterIndex = index),
           ),
-          const SizedBox(height: 40), // Extra space before the data starts
+          const SizedBox(height: 40),
 
-          // --- Group 1: Recent Transactions ---
-          const TransactionGroupHeader(title: 'Recent Transactions'),
-          ...transactionCards,
+          if (filteredTransactions.isEmpty)
+             Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Text(
+                  'No transactions found.',
+                  style: TextStyle(color: Theme.of(context).colorScheme.outline),
+                ),
+              ),
+            )
+          else ...[
+            const TransactionGroupHeader(title: 'Activity'),
+            ...filteredTransactions.map((tx) => Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: TransactionCard(
+                icon: _getIconForCategory(tx.category),
+                title: tx.name,
+                date: '${DateFormat('MMM dd, yyyy').format(tx.date)} • ${tx.category}',
+                amount: tx.isMoneyIn ? tx.amount : -tx.amount,
+                status: TransactionStatus.completed, 
+              ),
+            )),
+          ],
         ],
       ),
     );
   }
-}
-
-class _TransactionData {
-  const _TransactionData({
-    required this.icon,
-    required this.title,
-    required this.date,
-    required this.amount,
-    required this.status,
-  });
-
-  final IconData icon;
-  final String title;
-  final String date;
-  final double amount;
-  final TransactionStatus status;
 }

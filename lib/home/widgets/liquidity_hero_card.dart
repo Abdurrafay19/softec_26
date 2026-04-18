@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../ledger/transaction_provider.dart';
 
-class LiquidityHeroCard extends StatelessWidget {
+class LiquidityHeroCard extends ConsumerWidget {
   const LiquidityHeroCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Access the global theme data
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch only the totalBalance from the summary
+    final totalBalance = ref.watch(transactionsProvider.select((s) => s.totalBalance));
+    final colorScheme = Theme.of(context).colorScheme;
 
-    // Logic for trend visualization
-    final double trendValue = 15.0;
-    final bool isPositive = trendValue >= 0;
-
-    // Define trend colors based on state
-    final Color trendBaseColor = isPositive ? Colors.green : Colors.red;
+    final formatter = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
 
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        // Uses surfaceContainerLowest from your AppTheme
         color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            // Uses onSurface for a tinted ambient shadow
             color: colorScheme.onSurface.withValues(alpha: 0.04),
             blurRadius: 40,
             offset: const Offset(0, 4),
@@ -41,19 +37,21 @@ class LiquidityHeroCard extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.2,
-              // Uses onSurfaceVariant for secondary text labels
               color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            '\$248,590.22',
-            style: GoogleFonts.manrope(
-              fontSize: 48,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -2.0,
-              color: colorScheme.onSurface,
-              fontFeatures: const [FontFeature.tabularFigures()],
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              formatter.format(totalBalance),
+              style: GoogleFonts.manrope(
+                fontSize: 48,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -2.0,
+                color: colorScheme.onSurface,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -62,24 +60,24 @@ class LiquidityHeroCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: trendBaseColor.withValues(alpha: 0.2),
+                  color: Colors.green.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isPositive ? Icons.trending_up : Icons.trending_down,
-                      color: isPositive ? Colors.green.shade800 : Colors.red.shade800,
+                      Icons.trending_up,
+                      color: Colors.green.shade800,
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${isPositive ? '+' : ''}${trendValue.toStringAsFixed(1)}%',
+                      '+5.2%',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: isPositive ? Colors.green.shade800 : Colors.red.shade800,
+                        color: Colors.green.shade800,
                       ),
                     ),
                   ],

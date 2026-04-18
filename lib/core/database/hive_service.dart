@@ -7,7 +7,12 @@ class HiveService {
   // Initialize Hive and Register Adapter
   static Future<void> init() async {
     await Hive.initFlutter();
-    //Hive.registerAdapter(TransactionAdapter());
+    
+    // Check if adapter is registered to avoid duplicate registration errors
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(TransactionAdapter());
+    }
+    
     await Hive.openBox<Transaction>(_boxName);
   }
 
@@ -18,6 +23,7 @@ class HiveService {
   static Future<void> addTransaction(Transaction transaction) async {
     final box = getTransactionBox();
     await box.add(transaction);
+    print('Transaction Saved: ${transaction.name}'); // Debug print
   }
 
   // Get All Transactions (Ordered by date)
@@ -25,6 +31,7 @@ class HiveService {
     final box = getTransactionBox();
     final list = box.values.toList();
     list.sort((a, b) => b.date.compareTo(a.date));
+    print('Loaded ${list.length} transactions'); // Debug print
     return list;
   }
 }

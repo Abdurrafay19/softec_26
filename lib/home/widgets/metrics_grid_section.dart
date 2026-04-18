@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import '../../ledger/transaction_provider.dart';
 import 'metric_tile.dart';
 
-class MetricsGridSection extends StatelessWidget {
+class MetricsGridSection extends ConsumerWidget {
   const MetricsGridSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the summary from the provider
+    final summary = ref.watch(transactionsProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
+    final formatter = NumberFormat.compactCurrency(symbol: '\$');
 
     return Column(
       children: [
@@ -16,8 +23,7 @@ class MetricsGridSection extends StatelessWidget {
               child: MetricTile(
                 icon: Icons.account_balance_wallet,
                 title: 'NET CASH',
-                amount: '\$14.2k',
-                // Secondary color is used for "Net Cash" per your HTML design
+                amount: formatter.format(summary.netCash),
                 iconColor: colorScheme.primary,
               ),
             ),
@@ -26,8 +32,7 @@ class MetricsGridSection extends StatelessWidget {
               child: MetricTile(
                 icon: Icons.speed,
                 title: 'BURN RATE',
-                amount: '\$8.4k',
-                // Tertiary color is used for "Burn Rate"
+                amount: formatter.format(summary.totalOutflow / 30), // Simple daily avg
                 iconColor: colorScheme.tertiary,
               ),
             ),
@@ -40,7 +45,7 @@ class MetricsGridSection extends StatelessWidget {
               child: MetricTile(
                 icon: Icons.input,
                 title: 'INFLOW',
-                amount: '\$42.1k',
+                amount: formatter.format(summary.totalInflow),
                 iconColor: colorScheme.primary,
               ),
             ),
@@ -49,7 +54,7 @@ class MetricsGridSection extends StatelessWidget {
               child: MetricTile(
                 icon: Icons.output,
                 title: 'OUTFLOW',
-                amount: '\$27.9k',
+                amount: formatter.format(summary.totalOutflow),
                 iconColor: colorScheme.error,
               ),
             ),
