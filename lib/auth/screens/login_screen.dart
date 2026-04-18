@@ -13,6 +13,8 @@ import '../../navigation/screens/main_navigation_screen.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+   // Override the build method to construct the login screen UI
+   
   @override
   Widget build(BuildContext context) {
     // Access the global theme tokens exactly like HomeScreen
