@@ -45,7 +45,7 @@ class PremiumBottomNav extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _buildNavItem(context, icon: Icons.home, label: 'Home', index: 0),
-                    _buildNavItem(context, icon: Icons.bar_chart, label: 'Analytics', index: 1),
+                    _buildNavItem(context, icon: Icons.payments, label: 'Ledger', index: 1),
                     _buildNavItem(context, icon: Icons.person, label: 'Account', index: 2),
                   ],
                 ),
