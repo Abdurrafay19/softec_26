@@ -44,7 +44,20 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
 
   // Formatting helper for premium editorial dates
   String _formatDate(DateTime date) {
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 
@@ -57,9 +70,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       lastDate: DateTime(2030),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme,
-          ),
+          data: Theme.of(
+            context,
+          ).copyWith(colorScheme: Theme.of(context).colorScheme),
           child: child!,
         );
       },
@@ -102,7 +115,12 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
 
     return Container(
       // Dynamic padding to clear keyboard (Phase 1)
-      padding: EdgeInsets.fromLTRB(24, 12, 24, bottomInset > 0 ? bottomInset + 24 : 40),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        bottomInset > 0 ? bottomInset + 24 : 40,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLowest,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -132,10 +150,20 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               child: Row(
                 children: [
                   Expanded(
-                    child: _buildTogglePill('Money Out', !isMoneyIn, colorScheme.error, () => setState(() => isMoneyIn = false)),
+                    child: _buildTogglePill(
+                      'Money Out',
+                      !isMoneyIn,
+                      colorScheme.error,
+                      () => setState(() => isMoneyIn = false),
+                    ),
                   ),
                   Expanded(
-                    child: _buildTogglePill('Money In', isMoneyIn, colorScheme.primary, () => setState(() => isMoneyIn = true)),
+                    child: _buildTogglePill(
+                      'Money In',
+                      isMoneyIn,
+                      colorScheme.primary,
+                      () => setState(() => isMoneyIn = true),
+                    ),
                   ),
                 ],
               ),
@@ -147,7 +175,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               controller: _amountController,
               autofocus: true,
               textAlign: TextAlign.center,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               style: GoogleFonts.manrope(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -157,7 +187,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               ),
               decoration: InputDecoration(
                 hintText: '\$0.00',
-                hintStyle: GoogleFonts.manrope(color: colorScheme.outlineVariant),
+                hintStyle: GoogleFonts.manrope(
+                  color: colorScheme.outlineVariant,
+                ),
                 border: InputBorder.none,
                 isDense: true,
               ),
@@ -181,7 +213,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
 
             // --- Phase 3 Updated: Inline Label & Input Layout ---
 
-// 1. Transaction Date Row
+            // 1. Transaction Date Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -199,7 +231,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                     onTap: _pickDate,
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(12),
@@ -207,7 +242,11 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.calendar_today, size: 18, color: colorScheme.primary),
+                          Icon(
+                            Icons.calendar_today,
+                            size: 18,
+                            color: colorScheme.primary,
+                          ),
                           const SizedBox(width: 12),
                           Text(
                             _formatDate(selectedDate),
@@ -225,8 +264,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             ),
 
             const SizedBox(height: 20), // Vertical spacing between the two rows
-
-// 2. Status Toggle Row
+            // 2. Status Toggle Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -239,10 +277,17 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.only(left: 16, right: 4, top: 2, bottom: 2),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 4,
+                    top: 2,
+                    bottom: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(100), // Rounded pill shape for status
+                    borderRadius: BorderRadius.circular(
+                      100,
+                    ), // Rounded pill shape for status
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -252,7 +297,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                         style: GoogleFonts.inter(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
-                          color: isPaid ? colorScheme.primary : colorScheme.onSurfaceVariant,
+                          color: isPaid
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -268,7 +315,6 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             ),
 
             const SizedBox(height: 40), // Spacer before Save Button
-
             // --- Phase 4: Submission ---
             PrimaryButton(
               text: 'Save Transaction',
@@ -288,7 +334,11 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
       child: Text(
         text,
-        style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14, color: colorScheme.onSurface),
+        style: GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: colorScheme.onSurface,
+        ),
       ),
     );
   }
@@ -309,7 +359,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             const SizedBox(width: 12),
             Text(
               _formatDate(selectedDate),
-              style: GoogleFonts.inter(fontWeight: FontWeight.w500, color: colorScheme.onSurface),
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface,
+              ),
             ),
           ],
         ),
@@ -332,7 +385,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w500,
               fontSize: 14,
-              color: isPaid ? colorScheme.primary : colorScheme.onSurfaceVariant,
+              color: isPaid
+                  ? colorScheme.primary
+                  : colorScheme.onSurfaceVariant,
             ),
           ),
           Switch(
@@ -345,7 +400,12 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
     );
   }
 
-  Widget _buildTogglePill(String title, bool isActive, Color activeColor, VoidCallback onTap) {
+  Widget _buildTogglePill(
+    String title,
+    bool isActive,
+    Color activeColor,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -354,12 +414,25 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
         decoration: BoxDecoration(
           color: isActive ? activeColor : Colors.transparent,
           borderRadius: BorderRadius.circular(100),
-          boxShadow: isActive ? [BoxShadow(color: activeColor.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : [],
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: activeColor.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
         ),
         child: Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isActive ? Colors.white : Theme.of(context).colorScheme.onSurfaceVariant),
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.bold,
+            color: isActive
+                ? Colors.white
+                : Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );

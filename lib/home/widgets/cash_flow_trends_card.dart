@@ -34,7 +34,7 @@ class CashFlowTrendsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Cash Flow Trends',
+                      'Budget Trend',
                       style: GoogleFonts.manrope(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -42,19 +42,9 @@ class CashFlowTrendsCard extends StatelessWidget {
                         letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Projection for the next 30 days',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              _buildSegmentedToggle(context, colorScheme),
             ],
           ),
           const SizedBox(height: 32),
@@ -62,41 +52,6 @@ class CashFlowTrendsCard extends StatelessWidget {
           const SizedBox(height: 16),
           _buildXAxisLabels(colorScheme),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSegmentedToggle(BuildContext context, ColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          _buildToggleOption(context, colorScheme, '1M', true),
-          _buildToggleOption(context, colorScheme, '3M', false),
-          _buildToggleOption(context, colorScheme, '6M', false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggleOption(BuildContext context, ColorScheme colorScheme, String label, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isSelected ? colorScheme.surface : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          color: isSelected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
-        ),
       ),
     );
   }
