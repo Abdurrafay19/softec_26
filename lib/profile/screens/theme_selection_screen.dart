@@ -101,7 +101,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
     required Color iconColor,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isSelected = _selectedTheme == value;
+    //final isSelected = _selectedTheme == value;
 
     return Material(
       color: Colors.transparent,

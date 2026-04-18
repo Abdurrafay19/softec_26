@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/auth_header.dart';
 import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
-import '../widgets/auth_footer.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -120,7 +119,7 @@ class SignupScreen extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    const AuthFooter(),
+                   // const AuthFooter(),
                   ],
                 ),
               ),

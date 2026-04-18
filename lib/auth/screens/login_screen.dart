@@ -1,28 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Added for editorial typography
+import 'package:google_fonts/google_fonts.dart';
+import 'package:local_auth/local_auth.dart'; // Added for local authentication
 
 // Modular Auth Widgets
 import '../widgets/auth_header.dart';
-import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
-import '../widgets/biometric_action_button.dart';
-// import '../widgets/auth_footer.dart';
-import 'signup_screen.dart';
 import '../../navigation/screens/main_navigation_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  bool _isAuthenticating = false;
+
+  Future<void> _authenticate() async {
+    setState(() => _isAuthenticating = true);
+
+    try {
+      // Trigger the OS-level Biometric / PIN dialog
+      final bool didAuthenticate = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to access your financial sanctuary.',
+          biometricOnly: false, // Set to false to allow device PIN fallback
+      );
+
+      if (didAuthenticate && mounted) {
+        // Success: Navigate to the main app
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Authentication Error: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isAuthenticating = false);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Access the global theme tokens exactly like HomeScreen
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      // Utilizing theme surface token instead of hardcoded Color(0xFFF7F9FF)
       backgroundColor: colorScheme.surface,
-
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -46,13 +81,13 @@ class LoginScreen extends StatelessWidget {
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -1.0,
-                        color: colorScheme.primary, // Tied to primary theme color
+                        color: colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 12),
 
                     Text(
-                      'Enter your credentials to access your financial sanctuary.',
+                      'Verify your identity to unlock your ledger.',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                         fontSize: 16,
@@ -61,14 +96,12 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 40),
 
-                    // Main Login Card
+                    // Centered Local Auth Card
                     Container(
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        // Replaced Colors.white with the dynamic surface token
                         color: colorScheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(24),
-                        // Ambient shadow adapting to the dynamic onSurface color
                         boxShadow: [
                           BoxShadow(
                             color: colorScheme.onSurface.withValues(alpha: 0.06),
@@ -80,114 +113,30 @@ class LoginScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const EditorialTextField(
-                            label: 'Email Address',
-                            hintText: 'name@company.com',
-                            helperText: 'Use your registered business email',
-                          ),
-                          const SizedBox(height: 24),
-
-                          EditorialTextField(
-                            label: 'Password',
-                            hintText: '••••••••',
-                            isPassword: true,
-                            trailingLabelAction: GestureDetector(
-                              onTap: () {
-                                // TODO: Handle forgot password
-                              },
-                              child: Text(
-                                'Forgot Password?',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.primary,
-                                ),
-                              ),
-                            ),
+                          // Visual Icon for Biometrics
+                          Icon(
+                            Icons.fingerprint,
+                            size: 80,
+                            color: colorScheme.primary.withValues(alpha: 0.8),
                           ),
                           const SizedBox(height: 32),
-                          PrimaryButton(
-                            text: 'Sign In',
-                            icon: Icons.login,
-                            onPressed: () {
-                              // Use pushReplacement so the user cannot pop back to the login screen
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 24),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  'OR',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.5,
-                                    color: colorScheme.outline,
+                          _isAuthenticating
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: colorScheme.primary,
                                   ),
+                                )
+                              : PrimaryButton(
+                                  text: 'Unlock App',
+                                  icon: Icons.lock_open,
+                                  onPressed: _authenticate,
                                 ),
-                              ),
-                              Expanded(
-                                child: Divider(
-                                  color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-
-                          BiometricActionButton(
-                              onPressed: () {
-                                // TODO: Trigger FaceID/Fingerprint check
-                              }
-                          ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 32),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account?",
-                          style: GoogleFonts.inter(
-                            color: colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const SignupScreen()),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: colorScheme.primary,
-                            textStyle: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          child: const Text('Sign Up'),
-                        ),
-                      ],
-                    ),
-
-                    const Spacer(),
-                    // const AuthFooter(),
+                    const Spacer(flex: 2),
                   ],
                 ),
               ),
