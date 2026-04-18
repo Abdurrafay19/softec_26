@@ -8,6 +8,7 @@ import '../widgets/bottom_nav.dart';
 import '../../home/screens/home_screen.dart';
 import '../../ledger/screens/ledger_screen.dart';
 import '../../profile/screens/profile_screen.dart';
+import '../../core/database/hive_service.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -40,39 +41,48 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         titleSpacing: 24,
-        title: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                // Dynamic theme primary container
-                color: colorScheme.primaryContainer,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'S', // Consider updating this to an icon or your official logo later
-                style: GoogleFonts.manrope(
-                  // High contrast text inside the primary container
-                  color: colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 18,
+        title: ValueListenableBuilder(
+          valueListenable: HiveService.settingsListenable(),
+          builder: (context, box, child) {
+            final name = HiveService.getUserName().trim();
+            final titleText =
+                name.isEmpty ? 'Welcome Back' : 'Welcome Back, $name';
+
+            return Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    // Dynamic theme primary container
+                    color: colorScheme.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    'S', // Consider updating this to an icon or your official logo later
+                    style: GoogleFonts.manrope(
+                      // High contrast text inside the primary container
+                      color: colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Welcome Back, Alpha coders',
-              style: GoogleFonts.manrope(
-                // Adapts automatically to Light/Dark backgrounds
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                letterSpacing: -0.5,
-              ),
-            ),
-          ],
+                const SizedBox(width: 12),
+                Text(
+                  titleText,
+                  style: GoogleFonts.manrope(
+                    // Adapts automatically to Light/Dark backgrounds
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         // actions: [
         //   IconButton(

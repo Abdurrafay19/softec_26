@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/auth_header.dart';
+import '../../core/database/hive_service.dart';
 import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'login_screen.dart';
+import '../../navigation/screens/main_navigation_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -20,6 +22,28 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _completeSetup() async {
+    final String name = _nameController.text.trim();
+    if (name.isNotEmpty) {
+      await HiveService.setUserName(name);
+    }
+    await HiveService.setBiometricsEnabled(_enableBiometrics);
+    await HiveService.setSignupCompleted(true);
+
+    if (!mounted) {
+      return;
+    }
+
+    final Widget nextScreen = _enableBiometrics
+        ? const LoginScreen()
+        : const MainNavigationScreen();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextScreen),
+    );
   }
 
   @override
@@ -86,9 +110,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const EditorialTextField(
+                          EditorialTextField(
                             label: 'Full Name',
                             hintText: 'e.g., Elena Richardson',
+                            controller: _nameController,
                           ),
                           const SizedBox(height: 24),
 
@@ -134,12 +159,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           PrimaryButton(
                             text: 'Complete Setup',
                             icon: Icons.check_circle_outline,
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              );
-                            },
+                            onPressed: _completeSetup,
                           ),
                         ],
                       ),

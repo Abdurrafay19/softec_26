@@ -4,6 +4,8 @@ import '../widgets/profile_hero.dart';
 import '../widgets/settings_group_container.dart';
 import '../widgets/settings_tile.dart';
 import '../screens/theme_selection_screen.dart';
+import '../../core/database/hive_service.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,7 +15,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _biometricsEnabled = true;
+  bool _biometricsEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _biometricsEnabled = HiveService.isBiometricsEnabled();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +41,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const ProfileHeroSection(),
+                    ValueListenableBuilder(
+                      valueListenable: HiveService.settingsListenable(),
+                      builder: (context, box, child) {
+                        final name = HiveService.getUserName().trim();
+                        final displayName = name.isEmpty ? 'Your Name' : name;
+
+                        return ProfileHeroSection(
+                          displayName: displayName,
+                          onEdit: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EditProfileScreen(),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                     const SizedBox(height: 40),
 
                     _buildSectionTitle('Account Configuration', colorScheme),
@@ -42,9 +68,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         SettingsListTile(
                           icon: Icons.business_center_outlined,
-                          title: 'Edit Business Profile',
-                          subtitle: 'Tax ID, Billing Address, and Legal Entity',
+                          title: 'Edit Profile',
+                          subtitle: 'Update your display name',
                           iconColor: colorScheme.primary, // Adapts to wallpaper
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EditProfileScreen(),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -61,7 +95,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           iconColor: colorScheme.secondary,
                           trailing: Switch(
                             value: _biometricsEnabled,
-                            onChanged: (value) => setState(() => _biometricsEnabled = value),
+                            onChanged: (value) async {
+                              setState(() => _biometricsEnabled = value);
+                              await HiveService.setBiometricsEnabled(value);
+                            },
                             // Ties the active switch state to your dynamic primary color
                             activeThumbColor: colorScheme.primary,
                           ),
