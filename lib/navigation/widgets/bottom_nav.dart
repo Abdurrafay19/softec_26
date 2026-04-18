@@ -46,7 +46,7 @@ class PremiumBottomNav extends StatelessWidget {
                   children: [
                     _buildNavItem(context, icon: Icons.home, label: 'Home', index: 0),
                     _buildNavItem(context, icon: Icons.payments, label: 'Ledger', index: 1),
-                    _buildNavItem(context, icon: Icons.person, label: 'Account', index: 2),
+                    _buildNavItem(context, icon: Icons.person, label: 'Profile', index: 2),
                   ],
                 ),
               ),

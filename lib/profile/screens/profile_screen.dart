@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Added for consistent typography
 import '../widgets/profile_hero.dart';
 import '../widgets/settings_group_container.dart';
 import '../widgets/settings_tile.dart';
+import '../screens/theme_selection_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,19 +21,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FF),
+      // Let the main navigation's dynamic surface background bleed through
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
+                // Maintains the 120px bottom padding to clear the frosted glass BottomNav
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const ProfileHeroSection(),
                     const SizedBox(height: 40),
-                    _buildSectionTitle('Account Configuration', theme),
+
+                    _buildSectionTitle('Account Configuration', colorScheme),
                     const SizedBox(height: 16),
                     SettingsGroupContainer(
                       children: [
@@ -39,12 +44,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Icons.business_center_outlined,
                           title: 'Edit Business Profile',
                           subtitle: 'Tax ID, Billing Address, and Legal Entity',
-                          iconColor: colorScheme.primary,
+                          iconColor: colorScheme.primary, // Adapts to wallpaper
                         ),
                       ],
                     ),
                     const SizedBox(height: 32),
-                    _buildSectionTitle('App Preferences', theme),
+
+                    _buildSectionTitle('App Preferences', colorScheme),
                     const SizedBox(height: 16),
                     SettingsGroupContainer(
                       children: [
@@ -56,19 +62,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           trailing: Switch(
                             value: _biometricsEnabled,
                             onChanged: (value) => setState(() => _biometricsEnabled = value),
-                          //  activeColor: colorScheme.primary,
+                            // Ties the active switch state to your dynamic primary color
+                            activeColor: colorScheme.primary,
                           ),
                         ),
                         SettingsListTile(
                           icon: Icons.palette_outlined,
                           title: 'Visual Appearance',
                           subtitle: 'Light theme active',
-                          iconColor: colorScheme.secondary,
+                          iconColor: colorScheme.tertiary,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ThemeSelectionScreen(),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
                     const SizedBox(height: 32),
-                    _buildSectionTitle('Support & Legal', theme),
+
+                    _buildSectionTitle('Support & Legal', colorScheme),
                     const SizedBox(height: 16),
                     SettingsGroupContainer(
                       children: [
@@ -76,35 +92,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Icons.policy_outlined,
                           title: 'Privacy & Legal',
                           subtitle: 'Privacy Policy, Terms of Service',
-                          iconColor: colorScheme.tertiary,
+                          // A neutral color for less critical UI elements
+                          iconColor: colorScheme.onSurfaceVariant,
                         ),
                       ],
                     ),
                     const SizedBox(height: 32),
+
+                    // Dynamic Sign Out Button
                     OutlinedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.logout),
                       label: const Text('Sign Out of Account'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFBA1A1A),
-                        side: const BorderSide(color: Color(0x33BA1A1A)),
+                        // Automatically uses the system's designated error color
+                        foregroundColor: colorScheme.error,
+                        side: BorderSide(
+                          color: colorScheme.error.withValues(alpha: 0.3),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        textStyle: const TextStyle(
+                        textStyle: GoogleFonts.inter(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
+
+                    // Dynamic Version Text
                     Center(
                       child: Text(
                         'VERSION 2.4.0 (GOLD)',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: Colors.grey[400],
-                          fontWeight: FontWeight.w600,
+                        style: GoogleFonts.inter(
+                          color: colorScheme.outline, // Replaced hardcoded grey
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: 2.0,
                         ),
                       ),
@@ -119,14 +144,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title, ThemeData theme) {
+  // Refactored to accept colorScheme and use consistent GoogleFonts
+  Widget _buildSectionTitle(String title, ColorScheme colorScheme) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
       child: Text(
         title.toUpperCase(),
-        style: theme.textTheme.labelSmall?.copyWith(
+        style: GoogleFonts.inter(
           fontWeight: FontWeight.bold,
-          color: Colors.grey[500],
+          fontSize: 12,
+          color: colorScheme.outline, // Perfectly adapts to light/dark surfaces
           letterSpacing: 1.5,
         ),
       ),
