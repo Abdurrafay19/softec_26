@@ -76,4 +76,9 @@ class HiveService {
     print('Loaded ${list.length} transactions'); // Debug print
     return list;
   }
+
+  static Future<void> deleteAccountData() async {
+    await getSettingsBox().clear();
+    await getTransactionBox().clear();
+  }
 }

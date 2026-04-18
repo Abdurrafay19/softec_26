@@ -6,6 +6,10 @@ import '../widgets/settings_tile.dart';
 import '../screens/theme_selection_screen.dart';
 import '../../core/database/hive_service.dart';
 import 'edit_profile_screen.dart';
+import 'terms_conditions_screen.dart';
+import '../../auth/screens/signup_screen.dart';
+
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -126,21 +130,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SettingsGroupContainer(
                       children: [
                         SettingsListTile(
-                          icon: Icons.policy_outlined,
-                          title: 'Privacy & Legal',
-                          subtitle: 'Privacy Policy, Terms of Service',
-                          // A neutral color for less critical UI elements
+                          icon: Icons.description_outlined,
+                          title: 'Terms & Conditions',
+                          subtitle: 'Read the terms of service',
                           iconColor: colorScheme.onSurfaceVariant,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TermsConditionsScreen(),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
                     const SizedBox(height: 32),
 
-                    // Dynamic Sign Out Button
+                    
                     OutlinedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.logout),
-                      label: const Text('Sign Out of Account'),
+                      onPressed: () async {
+                        final bool? shouldDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Delete account?'),
+                              content: const Text(
+                                'This will remove your local data, including your name and transactions.',
+                                style: TextStyle(
+                                color: Color(0xFF555555), // Replaced hardcoded grey
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (shouldDelete != true) {
+                          return;
+                        }
+
+                        await HiveService.deleteAccountData();
+
+                        if (!mounted) {
+                          return;
+                        }
+
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignupScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      icon: const Icon(Icons.delete_outline),
+                      label: const Text('Delete Account'),
                       style: OutlinedButton.styleFrom(
                         // Automatically uses the system's designated error color
                         foregroundColor: colorScheme.error,
