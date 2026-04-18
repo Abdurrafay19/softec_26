@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/auth_header.dart';
 import '../../shared/widgets/editorial_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -24,9 +25,11 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FF),
+      // Replaced Color(0xFFF7F9FF) with dynamic surface
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -43,35 +46,39 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: Column(
                   children: [
                     const Spacer(),
-                    
+
                     Text(
                       'Welcome Aboard',
-                      style: theme.textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.manrope(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
                         letterSpacing: -1.0,
-                        color: theme.colorScheme.onSurface,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'Let\'s get your profile set up.',
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 40),
-                    
+
                     // Main Input Card
                     Container(
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        // Replaced Colors.white with dynamic container token
+                        color: colorScheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(24),
-                        boxShadow: const [
+                        boxShadow: [
                           BoxShadow(
-                            color: Color.fromRGBO(24, 28, 32, 0.06),
-                            offset: Offset(0, 24),
+                            // Dynamic shadow using onSurface tint
+                            color: colorScheme.onSurface.withValues(alpha: 0.06),
+                            offset: const Offset(0, 24),
                             blurRadius: 40,
                           ),
                         ],
@@ -79,42 +86,42 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          EditorialTextField(
+                          const EditorialTextField(
                             label: 'Full Name',
                             hintText: 'e.g., Elena Richardson',
-                            // Pass the controller if your custom widget supports it:
-                            // controller: _nameController, 
                           ),
                           const SizedBox(height: 24),
-                          
-                          // Biometric Toggle
+
+                          // Biometric Toggle Container
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF7F9FF),
-                              borderRadius: BorderRadius.circular(12),
+                              // Using surfaceContainerHighest for a subtle inset look
+                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                                color: colorScheme.outlineVariant.withValues(alpha: 0.2),
                               ),
                             ),
                             child: SwitchListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(
                                 'Enable Biometric Login',
-                                style: TextStyle(
+                                style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w600,
-                                  color: theme.colorScheme.onSurface,
+                                  fontSize: 14,
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                               subtitle: Text(
                                 'Use fingerprint or face to sign in faster.',
-                                style: TextStyle(
+                                style: GoogleFonts.inter(
                                   fontSize: 12,
-                                  color: theme.colorScheme.onSurfaceVariant,
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
                               ),
                               value: _enableBiometrics,
-                              activeColor: theme.colorScheme.primary,
+                              activeColor: colorScheme.primary,
                               onChanged: (bool value) {
                                 setState(() {
                                   _enableBiometrics = value;
@@ -123,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           const SizedBox(height: 40),
-                          
+
                           PrimaryButton(
                             text: 'Complete Setup',
                             icon: Icons.check_circle_outline,
@@ -132,17 +139,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                 context,
                                 MaterialPageRoute(builder: (context) => const LoginScreen()),
                               );
-                              // Handle signup logic here using:
-                              // _nameController.text
-                              // _enableBiometrics
                             },
                           ),
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
                     const Spacer(),
                   ],
                 ),
