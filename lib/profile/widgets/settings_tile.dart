@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Added for editorial typography
 
 class SettingsListTile extends StatelessWidget {
   final IconData icon;
@@ -20,15 +21,19 @@ class SettingsListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We use Material and InkWell to handle the hover/tap background shifts 
+    // Access the global theme tokens
+    final colorScheme = Theme.of(context).colorScheme;
+
+    // We use Material and InkWell to handle the hover/tap background shifts
     // without relying on harsh divider lines.
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        // Optional: you can set the hoverColor here to match your 'surface-container-low' token
+        // Match the hover state to the soft surface hierarchy
+        hoverColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // Matches the p-5 from the HTML
+          padding: const EdgeInsets.all(20.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -37,18 +42,18 @@ class SettingsListTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.10), // 10% opacity background
-                  borderRadius: BorderRadius.circular(12), // rounded-xl equivalent
+                  color: iconColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
                   color: iconColor,
-                  size: 20, // Adjusted for the 40x40 box
+                  size: 20,
                 ),
               ),
-              
-              const SizedBox(width: 16), // gap-4 equivalent
-              
+
+              const SizedBox(width: 16),
+
               // 2. The Text Column (Title & Subtitle)
               Expanded(
                 child: Column(
@@ -57,30 +62,33 @@ class SettingsListTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface, // Adapts to Light/Dark Mode
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant, // Muted secondary text
+                      ),
                     ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               // 3. The Trailing Widget (Custom switch or default chevron)
-              trailing ?? 
+              trailing ??
                   Icon(
                     Icons.chevron_right,
-                    color: const Color(0xFFC1C6D6),
-                  ),  
+                    // Swapped hardcoded hex for dynamic outlineVariant
+                    color: colorScheme.outlineVariant,
+                  ),
             ],
           ),
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:sme_cash_flow_dashboard/home/screens/home_screen.dart';
+import 'package:google_fonts/google_fonts.dart'; // Added for editorial typography
 
 // Modular Auth Widgets
 import '../widgets/auth_header.dart';
@@ -18,12 +18,11 @@ class LoginScreen extends StatelessWidget {
     // Access the global theme tokens exactly like HomeScreen
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
 
     return Scaffold(
       // Utilizing theme surface token instead of hardcoded Color(0xFFF7F9FF)
-      backgroundColor: colorScheme.surface, 
-      
+      backgroundColor: colorScheme.surface,
+
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -40,37 +39,40 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const Spacer(),
-                    
+
                     Text(
                       'Welcome Back',
-                      style: textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.manrope(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
                         letterSpacing: -1.0,
                         color: colorScheme.primary, // Tied to primary theme color
                       ),
                     ),
                     const SizedBox(height: 12),
-                    
+
                     Text(
                       'Enter your credentials to access your financial sanctuary.',
                       textAlign: TextAlign.center,
-                      style: textTheme.titleMedium?.copyWith(
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 40),
-                    
+
                     // Main Login Card
                     Container(
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        color: Colors.white, // Surface Container Lowest equivalent
+                        // Replaced Colors.white with the dynamic surface token
+                        color: colorScheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(24),
-                        // Ambient shadow from design system
-                        boxShadow: const [
+                        // Ambient shadow adapting to the dynamic onSurface color
+                        boxShadow: [
                           BoxShadow(
-                            color: Color.fromRGBO(24, 28, 32, 0.06),
-                            offset: Offset(0, 24),
+                            color: colorScheme.onSurface.withValues(alpha: 0.06),
+                            offset: const Offset(0, 24),
                             blurRadius: 40,
                           ),
                         ],
@@ -84,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                             helperText: 'Use your registered business email',
                           ),
                           const SizedBox(height: 24),
-                          
+
                           EditorialTextField(
                             label: 'Password',
                             hintText: '••••••••',
@@ -95,8 +97,9 @@ class LoginScreen extends StatelessWidget {
                               },
                               child: Text(
                                 'Forgot Password?',
-                                style: textTheme.labelMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                   color: colorScheme.primary,
                                 ),
                               ),
@@ -115,19 +118,20 @@ class LoginScreen extends StatelessWidget {
                             },
                           ),
                           const SizedBox(height: 24),
-                          
+
                           Row(
                             children: [
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant.withOpacity(0.3),
+                                  color: colorScheme.outlineVariant.withValues(alpha: 0.3),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   'OR',
-                                  style: textTheme.labelSmall?.copyWith(
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.5,
                                     color: colorScheme.outline,
@@ -136,31 +140,32 @@ class LoginScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant.withOpacity(0.3),
+                                  color: colorScheme.outlineVariant.withValues(alpha: 0.3),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 24),
-                          
+
                           BiometricActionButton(
-                            onPressed: () {
-                              // TODO: Trigger FaceID/Fingerprint check
-                            }
+                              onPressed: () {
+                                // TODO: Trigger FaceID/Fingerprint check
+                              }
                           ),
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Don't have an account?",
-                          style: textTheme.bodyMedium?.copyWith(
+                          style: GoogleFonts.inter(
                             color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         TextButton(
@@ -172,7 +177,7 @@ class LoginScreen extends StatelessWidget {
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: colorScheme.primary,
-                            textStyle: const TextStyle(
+                            textStyle: GoogleFonts.inter(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -180,7 +185,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    
+
                     const Spacer(),
                     // const AuthFooter(),
                   ],

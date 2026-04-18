@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EditorialTextField extends StatelessWidget {
   final String label;
@@ -19,6 +20,7 @@ class EditorialTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,9 +32,12 @@ class EditorialTextField extends StatelessWidget {
               padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
               child: Text(
                 label,
-                style: theme.textTheme.labelLarge?.copyWith(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.secondary,
+                  fontSize: 14,
+                  // Changed from 'secondary' to 'onSurface' to maintain the strict,
+                  // professional editorial voice instead of looking too colorful.
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),
@@ -41,11 +46,20 @@ class EditorialTextField extends StatelessWidget {
         ),
         TextFormField(
           obscureText: isPassword,
+          // Ensures the typed text adapts to light/dark mode
+          style: GoogleFonts.inter(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: theme.colorScheme.outline),
+            hintStyle: GoogleFonts.inter(
+              color: colorScheme.outline,
+              fontWeight: FontWeight.w400,
+            ),
             filled: true,
-            fillColor: const Color(0xFFE5E8EE), 
+            // Replaced 0xFFE5E8EE with the exact token requested in DESIGN.md
+            fillColor: colorScheme.surfaceContainerHighest,
             contentPadding: const EdgeInsets.all(16),
             border: const UnderlineInputBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
@@ -53,7 +67,7 @@ class EditorialTextField extends StatelessWidget {
             ),
             focusedBorder: UnderlineInputBorder(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-              borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+              borderSide: BorderSide(color: colorScheme.primary, width: 2),
             ),
           ),
         ),
@@ -63,8 +77,9 @@ class EditorialTextField extends StatelessWidget {
             padding: const EdgeInsets.only(left: 4.0),
             child: Text(
               helperText!,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
           ),
