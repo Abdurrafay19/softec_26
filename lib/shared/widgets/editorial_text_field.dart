@@ -41,7 +41,7 @@ class EditorialTextField extends StatelessWidget {
                 ),
               ),
             ),
-            if (trailingLabelAction != null) trailingLabelAction!,
+            ?trailingLabelAction,
           ],
         ),
         TextFormField(
