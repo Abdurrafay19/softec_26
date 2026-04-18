@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/add_transaction_sheet.dart';
 
 class LiquidityHeroCard extends StatelessWidget {
   const LiquidityHeroCard({super.key});
@@ -112,7 +113,17 @@ class LiquidityHeroCard extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
-                      onTap: () {},
+                      onTap: () {
+                        // Trigger the Modal specifically for Adding Funds (Income)
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const AddTransactionSheet(
+                            initialIsMoneyIn: true, // This forces the "Money In" state
+                          ),
+                        );
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
