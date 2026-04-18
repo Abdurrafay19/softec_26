@@ -6,6 +6,7 @@ import '../widgets/cash_flow_trends_card.dart';
 import '../widgets/metrics_grid_section.dart';
 import '../widgets/smart_insights_card.dart';
 import '../widgets/recent_activity_section.dart';
+import '../widgets/add_transaction_sheet.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,25 +43,40 @@ class HomeScreen extends StatelessWidget {
 
       // Step 5.3: Updated Contextual Floating Action Button
       floatingActionButton: Padding(
-        // Pushes the FAB up to clear the custom floating bottom navigation bar
         padding: const EdgeInsets.only(bottom: 100.0),
         child: Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: colorScheme.primary, // Tied to universal theme
+            color: colorScheme.primary,
             borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              // Added the premium glowing shadow to match your PrimaryButton
+              BoxShadow(
+                color: colorScheme.primary.withValues(alpha: 0.3),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: () {
-                // TODO: Wire this up to a transaction modal later
+                // --- The Magic Modal Call ---
+                showModalBottomSheet(
+                  context: context,
+                  // isScrollControlled is REQUIRED to let the modal slide up with the keyboard
+                  isScrollControlled: true,
+                  // Makes the default background invisible so our 24px rounded corners show up
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => const AddTransactionSheet(),
+                );
               },
               child: Icon(
                 Icons.add,
-                color: colorScheme.onPrimary, // High-contrast icon color
+                color: colorScheme.onPrimary,
                 size: 28,
               ),
             ),

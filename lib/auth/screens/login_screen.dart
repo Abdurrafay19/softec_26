@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart'; // Added for editorial typograp
 
 // Modular Auth Widgets
 import '../widgets/auth_header.dart';
-import '../widgets/editorial_text_field.dart';
-import '../widgets/primary_button.dart';
+import '../../shared/widgets/editorial_text_field.dart';
+import '../../shared/widgets/primary_button.dart';
 import '../widgets/biometric_action_button.dart';
 // import '../widgets/auth_footer.dart';
 import 'signup_screen.dart';

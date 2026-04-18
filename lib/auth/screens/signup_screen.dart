@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/auth_header.dart';
-import '../widgets/editorial_text_field.dart';
-import '../widgets/primary_button.dart';
+import '../../shared/widgets/editorial_text_field.dart';
+import '../../shared/widgets/primary_button.dart';
 import '../widgets/auth_footer.dart';
 import 'login_screen.dart';
 
