@@ -6,7 +6,7 @@ import '../widgets/bottom_nav.dart';
 
 // Import all Feature Screens
 import '../../home/screens/home_screen.dart';
-import '../../analytics/screens/analytics_screen.dart';
+import '../../ledger/screens/ledger_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   // The list of screens in the exact order of the bottom nav items
   final List<Widget> _screens = const [
     HomeScreen(),
-    AnalyticsScreen(),
+    LedgerScreen(),
     ProfileScreen(),
   ];
 
@@ -63,7 +63,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ),
             const SizedBox(width: 12),
             Text(
-              'The Fiscal Architect',
+              'Welcome Back, Alpha coders',
               style: GoogleFonts.manrope(
                 // Adapts automatically to Light/Dark backgrounds
                 color: colorScheme.onSurface,
@@ -74,14 +74,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            // Uses onSurfaceVariant for secondary/tertiary UI elements
-            icon: Icon(Icons.menu, color: colorScheme.onSurfaceVariant),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 16),
-        ],
+        // actions: [
+        //   IconButton(
+        //     // Uses onSurfaceVariant for secondary/tertiary UI elements
+        //     icon: Icon(Icons.menu, color: colorScheme.onSurfaceVariant),
+        //     onPressed: () {},
+        //   ),
+        //   const SizedBox(width: 16),
+        // ],
       ),
       // IndexedStack preserves the state of the screens when you switch tabs
       body: IndexedStack(
