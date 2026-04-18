@@ -21,6 +21,7 @@ class FiscalArchitectApp extends StatelessWidget {
           // Use dynamic colors if available, otherwise fall back to your custom theme
           theme: AppTheme.lightTheme(lightDynamic),
           darkTheme: AppTheme.darkTheme(darkDynamic),
+          // Set themeMode to system to automatically switch between light and dark themes based on user preference
           themeMode: ThemeMode.system,
           // home: const MainNavigationScreen(),
           home: LoginScreen(),
