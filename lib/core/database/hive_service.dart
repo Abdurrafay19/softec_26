@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../ledger/models/transaction.dart';
 import '../../goals/models/goal.dart';
 
@@ -109,5 +114,101 @@ class HiveService {
     await getSettingsBox().clear();
     await getTransactionBox().clear();
     await getGoalsBox().clear();
+  }
+
+  // --- Backup & Export Logic ---
+
+  static Future<void> exportBackup() async {
+    try {
+      final transactions = getTransactionBox().values.map((t) => {
+        'id': t.id,
+        'amount': t.amount,
+        'isMoneyIn': t.isMoneyIn,
+        'name': t.name,
+        'description': t.description,
+        'date': t.date.toIso8601String(),
+        'category': t.category,
+      }).toList();
+
+      final goals = getGoalsBox().values.map((g) => {
+        'id': g.id,
+        'name': g.name,
+        'targetAmount': g.targetAmount,
+        'dueDate': g.dueDate?.toIso8601String(),
+        'currentAmount': g.currentAmount,
+      }).toList();
+
+      final backupData = {
+        'version': 1,
+        'exportedAt': DateTime.now().toIso8601String(),
+        'transactions': transactions,
+        'goals': goals,
+      };
+
+      final jsonString = jsonEncode(backupData);
+      final directory = await getTemporaryDirectory();
+      final file = File('${directory.path}/pocketra_backup.json');
+      await file.writeAsString(jsonString);
+
+      await Share.shareXFiles([XFile(file.path)], text: 'Pocketra Backup');
+    } catch (e) {
+      debugPrint('Export failed: $e');
+      rethrow;
+    }
+  }
+
+  static Future<bool> importBackup() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final file = File(result.files.single.path!);
+        final content = await file.readAsString();
+        final data = jsonDecode(content) as Map<String, dynamic>;
+
+        if (!data.containsKey('transactions') || !data.containsKey('goals')) {
+          throw Exception('Invalid backup file format');
+        }
+
+        final txBox = getTransactionBox();
+        final goalsBox = getGoalsBox();
+
+        await txBox.clear();
+        await goalsBox.clear();
+
+        final transactions = data['transactions'] as List;
+        for (var t in transactions) {
+          await txBox.add(Transaction(
+            id: t['id'],
+            amount: t['amount'].toDouble(),
+            isMoneyIn: t['isMoneyIn'],
+            name: t['name'],
+            description: t['description'],
+            date: DateTime.parse(t['date']),
+            category: t['category'],
+          ));
+        }
+
+        final goals = data['goals'] as List;
+        for (var g in goals) {
+          await goalsBox.put(g['id'], Goal(
+            id: g['id'],
+            name: g['name'],
+            targetAmount: g['targetAmount'].toDouble(),
+            dueDate: g['dueDate'] != null ? DateTime.parse(g['dueDate']) : null,
+            currentAmount: g['currentAmount'].toDouble(),
+          ));
+        }
+
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Import failed: $e');
+      rethrow;
+    }
   }
 }

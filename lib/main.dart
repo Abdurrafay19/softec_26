@@ -1,10 +1,10 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sme_cash_flow_dashboard/auth/screens/signup_screen.dart';
-import 'package:sme_cash_flow_dashboard/auth/screens/login_screen.dart';
-import 'package:sme_cash_flow_dashboard/navigation/screens/main_navigation_screen.dart';
-import 'package:sme_cash_flow_dashboard/shared/screens/splash_screen.dart';
+import 'package:pocketra/auth/screens/signup_screen.dart';
+import 'package:pocketra/auth/screens/login_screen.dart';
+import 'package:pocketra/navigation/screens/main_navigation_screen.dart';
+import 'package:pocketra/shared/screens/splash_screen.dart';
 import 'core/app_theme.dart';
 import 'core/database/hive_service.dart';
 import 'core/theme_provider.dart';
@@ -72,7 +72,7 @@ class _FiscalArchitectAppState extends ConsumerState<FiscalArchitectApp> {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return MaterialApp(
-          title: 'The Fiscal Architect',
+          title: 'Pocketra',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme(lightDynamic),
           darkTheme: AppTheme.darkTheme(darkDynamic),

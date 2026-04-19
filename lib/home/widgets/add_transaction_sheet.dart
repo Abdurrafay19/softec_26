@@ -67,7 +67,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2024),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(), // Restrict to past or today
     );
     if (picked != null && picked != selectedDate) {
       setState(() => selectedDate = picked);
@@ -75,14 +75,38 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
   }
 
   void _handleSave() async {
-    final double amountValue = double.tryParse(_amountController.text) ?? 0.0;
-    
+    // 1. Check if Amount is empty or zero
+    final amountText = _amountController.text.trim();
+    if (amountText.isEmpty) {
+      _showError('Please enter an amount');
+      return;
+    }
+
+    final double? amountValue = double.tryParse(amountText);
+    if (amountValue == null || amountValue <= 0) {
+      _showError('Please enter a valid amount greater than 0');
+      return;
+    }
+
+    // 2. Check if Name is empty
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      _showError('Please enter a transaction name');
+      return;
+    }
+
+    // 3. Confirm Category
+    if (selectedCategory.isEmpty) {
+      _showError('Please select a category');
+      return;
+    }
+
     final newTransaction = Transaction(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       amount: amountValue,
       isMoneyIn: isMoneyIn,
-      name: _nameController.text,
-      description: _descriptionController.text,
+      name: name,
+      description: _descriptionController.text.trim(),
       date: selectedDate,
       category: selectedCategory,
     );
@@ -91,6 +115,16 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
     await ref.read(transactionsProvider.notifier).addTransaction(newTransaction);
     
     if (mounted) Navigator.pop(context);
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override

@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
             const SizedBox(height: 24),
             // App Name
             Text(
-              'The Fiscal Architect',
+              'Pocketra',
               style: GoogleFonts.manrope(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,

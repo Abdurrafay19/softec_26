@@ -1,5 +1,5 @@
-name: sme_cash_flow_dashboard
-description: "A new Flutter project."
+name: pocketra
+description: "Pocketra - Modern SME Cash Flow Dashboard"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -23,6 +23,10 @@ dependencies:
   flutter_gemini: ^3.0.0
   flutter_dotenv: ^6.0.0
   google_generative_ai: ^0.4.7
+  share_plus: ^10.1.0
+  path_provider: ^2.1.3
+  file_picker: ^8.1.2
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -31,17 +35,26 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.8
 
-# CORRECT PLACEMENT: Top-level (no indentation)
-flutter_native_splash:
-  color: "#ffffff" # Fallback color
-  image: assets/logo.png
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
+  web: false
+  windows: false
+  macos: false
 
+# Splash Screen Configuration
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/logo.png
   android_12:
     image: assets/logo.png
-    # Dynamic Material You background for Android 12+
     color: "@android:color/system_neutral1_10"
 
 flutter:
   uses-material-design: true
-  #assets:
-   # - assets/logo.png
+  assets:
+    - assets/logo.png
+    - assets/icon/icon.png

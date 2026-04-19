@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Added for consistent typography
-import '../widgets/profile_hero.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/settings_group_container.dart';
 import '../widgets/settings_tile.dart';
 import '../screens/theme_selection_screen.dart';
 import '../../core/database/hive_service.dart';
+import '../../ledger/transaction_provider.dart';
 import 'edit_profile_screen.dart';
 import 'terms_conditions_screen.dart';
 import '../../auth/screens/signup_screen.dart';
 
-
-
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _biometricsEnabled = false;
 
   @override
@@ -33,14 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      // Let the main navigation's dynamic surface background bleed through
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                // Maintains the 120px bottom padding to clear the frosted glass BottomNav
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Icons.business_center_outlined,
                           title: 'Edit Profile',
                           subtitle: 'Update your display name',
-                          iconColor: colorScheme.primary, // Adapts to wallpaper
+                          iconColor: colorScheme.primary,
                           onTap: () {
                             Navigator.push(
                               context,
@@ -61,6 +58,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 builder: (context) => const EditProfileScreen(),
                               ),
                             );
+                          },
+                        ),
+                        SettingsListTile(
+                          icon: Icons.upload_file_outlined,
+                          title: 'Export Backup',
+                          subtitle: 'Save your data to a JSON file',
+                          iconColor: colorScheme.primary,
+                          onTap: () async {
+                            try {
+                              await HiveService.exportBackup();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Backup exported successfully')),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Export failed: $e')),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        SettingsListTile(
+                          icon: Icons.file_download_outlined,
+                          title: 'Import Backup',
+                          subtitle: 'Restore your data from a JSON file',
+                          iconColor: colorScheme.primary,
+                          onTap: () async {
+                            final bool? confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Import Backup?'),
+                                content: const Text('This will replace all your current transactions and goals. This action cannot be undone.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, true),
+                                    child: const Text('Import'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirm != true) return;
+
+                            try {
+                              final imported = await HiveService.importBackup();
+                              if (imported && context.mounted) {
+                                ref.invalidate(transactionsProvider);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Backup imported successfully')),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Import failed: $e')),
+                                );
+                              }
+                            }
                           },
                         ),
                       ],
@@ -82,14 +144,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               setState(() => _biometricsEnabled = value);
                               await HiveService.setBiometricsEnabled(value);
                             },
-                            // Ties the active switch state to your dynamic primary color
                             activeThumbColor: colorScheme.primary,
                           ),
                         ),
                         SettingsListTile(
                           icon: Icons.palette_outlined,
                           title: 'Visual Appearance',
-                          subtitle: 'Light theme active',
+                          subtitle: 'Customize app colors',
                           iconColor: colorScheme.tertiary,
                           onTap: () {
                             Navigator.push(
@@ -126,7 +187,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    
                     OutlinedButton.icon(
                       onPressed: () async {
                         final bool? shouldDelete = await showDialog<bool>(
@@ -137,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               content: const Text(
                                 'This will remove your local data, including your name and transactions.',
                                 style: TextStyle(
-                                color: Color(0xFF555555), // Replaced hardcoded grey
+                                  color: Color(0xFF555555),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -176,7 +236,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: const Icon(Icons.delete_outline),
                       label: const Text('Delete Account'),
                       style: OutlinedButton.styleFrom(
-                        // Automatically uses the system's designated error color
                         foregroundColor: colorScheme.error,
                         side: BorderSide(
                           color: colorScheme.error.withValues(alpha: 0.3),
@@ -193,12 +252,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Dynamic Version Text
                     Center(
                       child: Text(
                         'VERSION 2.4.0 (GOLD)',
                         style: GoogleFonts.inter(
-                          color: colorScheme.outline, // Replaced hardcoded grey
+                          color: colorScheme.outline,
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 2.0,
@@ -215,7 +273,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Refactored to accept colorScheme and use consistent GoogleFonts
   Widget _buildSectionTitle(String title, ColorScheme colorScheme) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
@@ -224,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         style: GoogleFonts.inter(
           fontWeight: FontWeight.bold,
           fontSize: 12,
-          color: colorScheme.outline, // Perfectly adapts to light/dark surfaces
+          color: colorScheme.outline,
           letterSpacing: 1.5,
         ),
       ),
