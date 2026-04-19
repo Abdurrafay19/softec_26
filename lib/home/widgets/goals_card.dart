@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/hive_service.dart';
-import '../../goals/models/goal.dart';
 import '../../goals/screens/manage_goals_screen.dart';
 import '../../shared/widgets/wavy_progress_bar.dart';
 import '../../ledger/transaction_provider.dart';
@@ -50,6 +49,8 @@ class GoalsCard extends ConsumerWidget {
             valueListenable: HiveService.goalsListenable(),
             builder: (context, box, _) {
               final goals = box.values.toList();
+
+
 
               if (goals.isEmpty) {
                 return Padding(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Added for consistent typography
-import '../widgets/profile_hero.dart';
 import '../widgets/settings_group_container.dart';
 import '../widgets/settings_tile.dart';
 import '../screens/theme_selection_screen.dart';
