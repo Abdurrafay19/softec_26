@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import '../widgets/liquidity_hero_card.dart';
 import '../widgets/cash_flow_trends_card.dart';
 import '../widgets/metrics_grid_section.dart';
-import '../widgets/smart_insights_card.dart';
 import '../widgets/recent_activity_section.dart';
 import '../widgets/add_transaction_sheet.dart';
 import '../widgets/goals_card.dart';
+import '../widgets/ai_consult.dart'; 
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -38,14 +38,15 @@ class HomeScreen extends StatelessWidget {
           MetricsGridSection(),
           SizedBox(height: 24),
 
-          SmartInsightsCard(),
+          // Replaced the nested Column with direct list children for cleaner structure
+          AIGuidanceCard(), 
           SizedBox(height: 24),
 
           RecentActivitySection(),
         ],
       ),
 
-      // Step 5.3: Updated Contextual Floating Action Button
+      // Contextual Floating Action Button
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100.0),
         child: Container(
@@ -55,7 +56,7 @@ class HomeScreen extends StatelessWidget {
             color: colorScheme.primary,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
-              // Added the premium glowing shadow to match your PrimaryButton
+              // Premium glowing shadow to match your PrimaryButton
               BoxShadow(
                 color: colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 24,
