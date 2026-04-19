@@ -9,11 +9,17 @@ class LiquidityHeroCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch only the totalBalance from the summary
-    final totalBalance = ref.watch(transactionsProvider.select((s) => s.totalBalance));
+    // Watch totalBalance and percentChange from the summary
+    final summary = ref.watch(transactionsProvider);
+    final totalBalance = summary.totalBalance;
+    final percentChange = summary.percentChange;
+    
     final colorScheme = Theme.of(context).colorScheme;
-
-    final formatter = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
+    final formatter = NumberFormat.currency(symbol: r'$', decimalDigits: 2);
+    
+    final bool isPositive = percentChange >= 0;
+    final Color trendColor = isPositive ? Colors.green : Colors.red;
+    final IconData trendIcon = isPositive ? Icons.trending_up : Icons.trending_down;
 
     return Container(
       padding: const EdgeInsets.all(32),
@@ -32,7 +38,7 @@ class LiquidityHeroCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'AVAILABLE LIQUIDITY',
+            'AVAILABLE BALANCE',
             style: GoogleFonts.inter(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -60,24 +66,24 @@ class LiquidityHeroCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.2),
+                  color: trendColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.trending_up,
-                      color: Colors.green.shade800,
+                      trendIcon,
+                      color: trendColor.withValues(alpha: 0.8),
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '+5.2%',
+                      '${isPositive ? '+' : ''}${percentChange.toStringAsFixed(1)}%',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green.shade800,
+                        color: trendColor.withValues(alpha: 0.8),
                       ),
                     ),
                   ],

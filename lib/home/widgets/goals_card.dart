@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/hive_service.dart';
 import '../../goals/models/goal.dart';
 import '../../goals/screens/manage_goals_screen.dart';
+import '../../shared/widgets/wavy_progress_bar.dart';
+import '../../ledger/transaction_provider.dart';
 
-class GoalsCard extends StatelessWidget {
+class GoalsCard extends ConsumerWidget {
   const GoalsCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final currencyFormat = NumberFormat.currency(symbol: r'$', decimalDigits: 0);
+    
+    // Watch the current total balance from the ledger
+    final currentBalance = ref.watch(transactionsProvider.select((s) => s.totalBalance));
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -59,10 +65,24 @@ class GoalsCard extends StatelessWidget {
 
               return Column(
                 children: goals.take(3).map((goal) {
-                  final progress = (goal.currentAmount / goal.targetAmount).clamp(0.0, 1.0);
+                  final progress = (currentBalance / goal.targetAmount).clamp(0.0, 1.0);
+                  final isCompleted = currentBalance >= goal.targetAmount;
+                  final isPastDue = goal.dueDate != null && 
+                                   goal.dueDate!.isBefore(DateTime.now()) && 
+                                   !isCompleted;
                   
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isCompleted 
+                            ? Colors.green.withValues(alpha: 0.5)
+                            : (isPastDue ? Colors.red.withValues(alpha: 0.5) : colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                      ),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,33 +94,50 @@ class GoalsCard extends StatelessWidget {
                               style: theme.textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: colorScheme.onSurface,
+                                decoration: isCompleted ? TextDecoration.lineThrough : null,
+                              ),
+                            ),
+                            if (isCompleted)
+                              const Icon(Icons.check_circle, color: Colors.green, size: 20)
+                            else if (isPastDue)
+                              const Icon(Icons.error_outline, color: Colors.red, size: 20)
+                            else
+                              Text(
+                                '${(progress * 100).toInt()}%',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        WavyProgressBar(
+                          progress: progress,
+                          color: isCompleted ? Colors.green : (isPastDue ? Colors.red : colorScheme.primary),
+                          backgroundColor: colorScheme.surfaceContainerHigh,
+                          height: 4,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              isCompleted 
+                                ? 'Goal Completed!' 
+                                : (isPastDue ? 'Due Date Passed' : '${currencyFormat.format(currentBalance)} saved'),
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: isCompleted ? Colors.green : (isPastDue ? Colors.red : colorScheme.onSurfaceVariant),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             Text(
-                              '${(progress * 100).toInt()}%',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.bold,
+                              'Target: ${currencyFormat.format(goal.targetAmount)}',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colorScheme.outline,
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 8),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            minHeight: 8,
-                            backgroundColor: colorScheme.surfaceContainerHigh,
-                            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${currencyFormat.format(goal.currentAmount)} of ${currencyFormat.format(goal.targetAmount)}',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
                         ),
                       ],
                     ),
@@ -139,7 +176,6 @@ class GoalsCard extends StatelessWidget {
   }
 }
 
-// Helper to use rounded corners on buttons easily
 class RoundedRectangleType extends RoundedRectangleBorder {
   RoundedRectangleType(double radius) : super(borderRadius: BorderRadius.circular(radius));
 }

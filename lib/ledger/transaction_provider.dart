@@ -17,6 +17,10 @@ class TransactionSummary {
   final double monthlyNetCash;
   final double monthlyBurnRate;
 
+  // Comparison stats
+  final double previousMonthBalance;
+  final double percentChange;
+
   TransactionSummary({
     required this.transactions,
     required this.totalBalance,
@@ -27,6 +31,8 @@ class TransactionSummary {
     required this.monthlyOutflow,
     required this.monthlyNetCash,
     required this.monthlyBurnRate,
+    required this.previousMonthBalance,
+    required this.percentChange,
   });
 }
 
@@ -45,6 +51,8 @@ class TransactionNotifier extends StateNotifier<TransactionSummary> {
     monthlyOutflow: 0,
     monthlyNetCash: 0,
     monthlyBurnRate: 0,
+    previousMonthBalance: 0,
+    percentChange: 0,
   )) {
     _loadTransactions();
   }
@@ -52,12 +60,16 @@ class TransactionNotifier extends StateNotifier<TransactionSummary> {
   void _loadTransactions() {
     final list = HiveService.getAllTransactions();
     final now = DateTime.now();
+    final startOfCurrentMonth = DateTime(now.year, now.month, 1);
     
     double inflow = 0;
     double outflow = 0;
     
     double mInflow = 0;
     double mOutflow = 0;
+
+    double prevMonthInflow = 0;
+    double prevMonthOutflow = 0;
 
     for (var tx in list) {
       // Lifetime calculation
@@ -75,6 +87,26 @@ class TransactionNotifier extends StateNotifier<TransactionSummary> {
           mOutflow += tx.amount;
         }
       }
+
+      // Previous Month Balance calculation (all transactions before current month)
+      if (tx.date.isBefore(startOfCurrentMonth)) {
+        if (tx.isMoneyIn) {
+          prevMonthInflow += tx.amount;
+        } else {
+          prevMonthOutflow += tx.amount;
+        }
+      }
+    }
+
+    final currentTotalBalance = inflow - outflow;
+    final previousMonthTotalBalance = prevMonthInflow - prevMonthOutflow;
+
+    double change = 0;
+    if (previousMonthTotalBalance != 0) {
+      change = ((currentTotalBalance - previousMonthTotalBalance) / previousMonthTotalBalance.abs()) * 100;
+    } else if (currentTotalBalance != 0) {
+      // If previous balance was 0 and current is not, it's a 100% increase (or decrease if negative)
+      change = currentTotalBalance > 0 ? 100.0 : -100.0;
     }
 
     // Burn rate calculation (total monthly outflow / days passed in month)
@@ -83,14 +115,16 @@ class TransactionNotifier extends StateNotifier<TransactionSummary> {
 
     state = TransactionSummary(
       transactions: list,
-      totalBalance: inflow - outflow,
+      totalBalance: currentTotalBalance,
       totalInflow: inflow,
       totalOutflow: outflow,
-      netCash: inflow - outflow,
+      netCash: currentTotalBalance,
       monthlyInflow: mInflow,
       monthlyOutflow: mOutflow,
       monthlyNetCash: mInflow - mOutflow,
       monthlyBurnRate: burnRate,
+      previousMonthBalance: previousMonthTotalBalance,
+      percentChange: change,
     );
   }
 
