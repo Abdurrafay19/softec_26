@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../ledger/models/transaction.dart';
+import '../../goals/models/goal.dart';
 
 class HiveService {
   static const String _boxName = 'transactions_box';
+  static const String _goalsBoxName = 'goals_box';
   static const String _settingsBoxName = 'settings_box';
   static const String _biometricsKey = 'biometric_enabled';
   static const String _signupCompletedKey = 'signup_completed';
@@ -17,18 +19,26 @@ class HiveService {
     if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(TransactionAdapter());
     }
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(GoalAdapter());
+    }
     
     await Hive.openBox<Transaction>(_boxName);
+    await Hive.openBox<Goal>(_goalsBoxName);
     await Hive.openBox(_settingsBoxName);
   }
 
-  // Get the box
+  // Get the boxes
   static Box<Transaction> getTransactionBox() => Hive.box<Transaction>(_boxName);
-
+  static Box<Goal> getGoalsBox() => Hive.box<Goal>(_goalsBoxName);
   static Box getSettingsBox() => Hive.box(_settingsBoxName);
 
   static ValueListenable<Box> settingsListenable() {
     return getSettingsBox().listenable();
+  }
+
+  static ValueListenable<Box<Goal>> goalsListenable() {
+    return getGoalsBox().listenable();
   }
 
   static bool isBiometricsEnabled() {
@@ -65,7 +75,6 @@ class HiveService {
   static Future<void> addTransaction(Transaction transaction) async {
     final box = getTransactionBox();
     await box.add(transaction);
-    print('Transaction Saved: ${transaction.name}'); // Debug print
   }
 
   // Get All Transactions (Ordered by date)
@@ -73,12 +82,32 @@ class HiveService {
     final box = getTransactionBox();
     final list = box.values.toList();
     list.sort((a, b) => b.date.compareTo(a.date));
-    print('Loaded ${list.length} transactions'); // Debug print
     return list;
+  }
+
+  // Goals CRUD
+  static Future<void> addGoal(Goal goal) async {
+    final box = getGoalsBox();
+    await box.put(goal.id, goal);
+  }
+
+  static Future<void> updateGoal(Goal goal) async {
+    final box = getGoalsBox();
+    await box.put(goal.id, goal);
+  }
+
+  static Future<void> deleteGoal(String id) async {
+    final box = getGoalsBox();
+    await box.delete(id);
+  }
+
+  static List<Goal> getAllGoals() {
+    return getGoalsBox().values.toList();
   }
 
   static Future<void> deleteAccountData() async {
     await getSettingsBox().clear();
     await getTransactionBox().clear();
+    await getGoalsBox().clear();
   }
 }

@@ -41,7 +41,7 @@ class RecentActivitySection extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Recent\nActivity',
+                'Recent Activity',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
@@ -49,24 +49,7 @@ class RecentActivitySection extends ConsumerWidget {
                   letterSpacing: -0.5,
                 ),
               ),
-              TextButton.icon(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                iconAlignment: IconAlignment.end,
-                icon: const Icon(Icons.download, size: 18),
-                label: Text(
-                  'Download\nCSV',
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                  ),
-                ),
-              ),
+
             ],
           ),
           const SizedBox(height: 32),

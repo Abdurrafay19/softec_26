@@ -7,6 +7,7 @@ import '../widgets/metrics_grid_section.dart';
 import '../widgets/smart_insights_card.dart';
 import '../widgets/recent_activity_section.dart';
 import '../widgets/add_transaction_sheet.dart';
+import '../widgets/goals_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -26,6 +27,9 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
         children: const [
           LiquidityHeroCard(),
+          SizedBox(height: 24),
+
+          GoalsCard(),
           SizedBox(height: 24),
 
           CashFlowTrendsCard(),

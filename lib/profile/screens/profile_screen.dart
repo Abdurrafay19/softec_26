@@ -45,27 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ValueListenableBuilder(
-                      valueListenable: HiveService.settingsListenable(),
-                      builder: (context, box, child) {
-                        final name = HiveService.getUserName().trim();
-                        final displayName = name.isEmpty ? 'Your Name' : name;
-
-                        return ProfileHeroSection(
-                          displayName: displayName,
-                          onEdit: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const EditProfileScreen(),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 40),
-
                     _buildSectionTitle('Account Configuration', colorScheme),
                     const SizedBox(height: 16),
                     SettingsGroupContainer(
