@@ -22,11 +22,18 @@ class AIGuidanceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.2),
+          color: colorScheme.primary.withValues(alpha: 0.15),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,12 +43,12 @@ class AIGuidanceCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: colorScheme.primary,
+                  color: colorScheme.primaryContainer,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.auto_awesome,
-                  color: colorScheme.onPrimary,
+                  color: colorScheme.onPrimaryContainer,
                   size: 18,
                 ),
               ),
@@ -57,7 +64,7 @@ class AIGuidanceCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Analyze your recent cash flow data to generate an instant, text-based strategy. Get personalized guidance on optimizing your daily usage budget, managing your burn-rate, and accelerating your business milestones.',
+            'Analyze your recent cash flow data to generate an instant, text-based strategy. Get personalized guidance on optimizing your daily usage budget and managing your burn-rate.',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
@@ -93,10 +100,6 @@ class AIGuidanceCard extends StatelessWidget {
   }
 }
 
-// ----------------------------------------------------------------------
-// Stateful Bottom Sheet (Handles API calls and UI states)
-// ----------------------------------------------------------------------
-
 class _AIGuideBottomSheet extends StatefulWidget {
   const _AIGuideBottomSheet();
 
@@ -111,8 +114,6 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
   @override
   void initState() {
     super.initState();
-    // Trigger the API call as soon as the sheet opens
-    // Note: Pass actual variables from your state management here
     _strategyFuture = _aiService.generateFinancialStrategy(
       userId: 'user_123',
       currentBalance: 10300.00,
@@ -120,17 +121,17 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
     );
   }
 
-  // Helper to map category strings from your backend to specific UI icons/colors
-  (IconData, Color) _getCategoryStyle(String category) {
+  (IconData, Color) _getCategoryStyle(BuildContext context, String category) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (category.toLowerCase()) {
       case 'budget':
-        return (Icons.account_balance_wallet_rounded, Colors.blue.shade600);
+        return (Icons.account_balance_wallet_rounded, colorScheme.primary);
       case 'burn_rate':
-        return (Icons.local_fire_department_rounded, Colors.orange.shade600);
+        return (Icons.local_fire_department_rounded, colorScheme.error);
       case 'goal':
-        return (Icons.flag_circle_rounded, Colors.green.shade600);
+        return (Icons.flag_circle_rounded, colorScheme.tertiary);
       default:
-        return (Icons.lightbulb_outline_rounded, Colors.purple.shade600);
+        return (Icons.lightbulb_outline_rounded, colorScheme.secondary);
     }
   }
 
@@ -141,7 +142,7 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+        color: colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 32),
@@ -152,13 +153,12 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
           Center(
             child: Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: colorScheme.outlineVariant,
+                color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -174,13 +174,10 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
           ),
           const SizedBox(height: 24),
 
-          // FutureBuilder to handle Loading, Error, and Success states
           Expanded(
             child: FutureBuilder<AIStrategyGuide>(
               future: _strategyFuture,
               builder: (context, snapshot) {
-                
-                // --- 1. LOADING STATE ---
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -188,7 +185,7 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
                       CircularProgressIndicator(color: colorScheme.primary),
                       const SizedBox(height: 24),
                       Text(
-                        'Analyzing your ledger...\nGenerating insights...',
+                        'Analyzing your pocket ledger...\nGenerating insights...',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: colorScheme.onSurfaceVariant,
@@ -199,35 +196,34 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
                   );
                 }
 
-                // --- 2. ERROR STATE ---
                 if (snapshot.hasError) {
                   return Center(
                     child: Text(
-                      'Unable to generate strategy right now.\nPlease try again later.\n\n${snapshot.error}',
+                      'Unable to generate strategy right now.\nPlease try again later.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: colorScheme.error),
                     ),
                   );
                 }
 
-                // --- 3. SUCCESS STATE ---
                 final strategy = snapshot.data!;
                 return ListView(
+                  physics: const BouncingScrollPhysics(),
                   children: [
                     Text(
                       strategy.summary,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
+                        height: 1.6,
                       ),
                     ),
                     const SizedBox(height: 24),
                     
-                    // Generate cards dynamically from the API response
                     ...strategy.sections.map((section) {
-                      final style = _getCategoryStyle(section.category);
+                      final style = _getCategoryStyle(context, section.category);
                       
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
+                        padding: const EdgeInsets.only(bottom: 16.0),
                         child: _buildAdviceSection(
                           context: context,
                           icon: style.$1,
@@ -255,14 +251,15 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
     required String content,
   }) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FF),
+        color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
         ),
       ),
       child: Column(
@@ -277,7 +274,7 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -287,7 +284,7 @@ class _AIGuideBottomSheetState extends State<_AIGuideBottomSheet> {
           Text(
             content,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              color: colorScheme.onSurfaceVariant,
               height: 1.6,
             ),
           ),

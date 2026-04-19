@@ -12,15 +12,9 @@ import 'core/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hive
   await HiveService.init();
-  
-  // Wrap the entire app in ProviderScope for Riverpod
-  runApp(
-    const ProviderScope(
-      child: FiscalArchitectApp(),
-    ),
-  );
+
+  runApp(const ProviderScope(child: FiscalArchitectApp()));
 }
 
 class FiscalArchitectApp extends ConsumerStatefulWidget {
@@ -40,7 +34,6 @@ class _FiscalArchitectAppState extends ConsumerState<FiscalArchitectApp> {
   }
 
   Future<void> _initializeApp() async {
-    // Simulate a brief delay for the splash screen
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       setState(() {
@@ -66,7 +59,6 @@ class _FiscalArchitectAppState extends ConsumerState<FiscalArchitectApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch the themeProvider to react to changes
     final themeMode = ref.watch(themeProvider);
 
     return DynamicColorBuilder(
@@ -83,3 +75,8 @@ class _FiscalArchitectAppState extends ConsumerState<FiscalArchitectApp> {
     );
   }
 }
+
+
+
+//// Team Name: Alpha Devs
+
