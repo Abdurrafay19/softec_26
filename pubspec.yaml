@@ -20,6 +20,9 @@ dependencies:
   fl_chart: ^0.70.2
   flutter_native_splash: ^2.4.0
   uuid: ^4.4.0
+  flutter_gemini: ^3.0.0
+  flutter_dotenv: ^6.0.0
+  google_generative_ai: ^0.4.7
 
 dev_dependencies:
   flutter_test:
@@ -40,5 +43,5 @@ flutter_native_splash:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/logo.png
+  #assets:
+   # - assets/logo.png

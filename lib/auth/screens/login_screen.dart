@@ -114,12 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Visual Icon for Biometrics
-                          Icon(
-                            Icons.fingerprint,
-                            size: 80,
-                            color: colorScheme.primary.withValues(alpha: 0.8),
-                          ),
-                          const SizedBox(height: 32),
+                          // Icon(
+                          //   Icons.login, // Consider updating this to a fingerprint or face icon later
+                          //   size: 60,
+                          //   color: colorScheme.primary.withValues(alpha: 0.8),
+                          // ),
+                          // const SizedBox(height: 32),
 
                           _isAuthenticating
                               ? Center(

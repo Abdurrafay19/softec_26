@@ -23,14 +23,6 @@ class PrimaryButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         // Swapped the gradient back to a solid dynamic color
         color: colorScheme.primary,
-        boxShadow: [
-          // Keeping the dynamic colored ambient shadow
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.3),
-            offset: const Offset(0, 8),
-            blurRadius: 24,
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
